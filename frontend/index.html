@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Principal -->
+    <title id="meta-title">Mangaice - Read Manhwas, Webtoons & Manga Online for Free</title>
+    <meta id="meta-desc" name="description" content="Read your favorite manhwas, webtoons, and mangas online with daily updates. Enjoy titles like Mercenary Enrollment, God of Blackfield, and more on Mangaice.">
+    <meta name="keywords" content="manhwa, webtoon, read manhwa online, manga, read webtoons free, Mangaice, Mercenary Enrollment, God of Blackfield">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mangaice.com/">
+
+    <!-- Open Graph / Facebook / WhatsApp / Discord Previews -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mangaice.com/">
+    <meta id="og-title" property="og:title" content="Mangaice - Read Manhwas & Webtoons Online">
+    <meta id="og-desc" property="og:description" content="Your ultimate platform for reading the best high-quality manhwas, webtoons, and mangas online for free.">
+    <meta id="og-image" property="og:image" content="https://mangaice.com/assets/og-cover.jpg">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://mangaice.com/">
+    <meta id="twitter-title" name="twitter:title" content="Mangaice - Read Manhwas & Webtoons Online">
+    <meta id="twitter-desc" name="twitter:description" content="Your ultimate platform for reading the best high-quality manhwas, webtoons, and mangas online for free.">
+    <meta id="twitter-image" name="twitter:image" content="https://mangaice.com/assets/og-cover.jpg">
+    
+    <!-- External Font (Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Pre-theme loading script -->
+    <script>
+        (function() {
+            var stored = localStorage.getItem('theme-override');
+            if (stored) {
+                if (stored === 'light') {
+                    document.documentElement.classList.add('tema-claro');
+                } else {
+                    document.documentElement.classList.remove('tema-claro');
+                }
+            } else {
+                if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('tema-claro');
+                } else {
+                    document.documentElement.classList.remove('tema-claro');
+                }
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                localStorage.removeItem('theme-override');
+                if (!e.matches) {
+                    document.documentElement.classList.add('tema-claro');
+                } else {
+                    document.documentElement.classList.remove('tema-claro');
+                }
+            });
+        })();
+    </script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- JS & Supabase Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <!-- Header / Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <!-- Logo com H1 visual/acessível para fortalecer a palavra-chave no SEO -->
+            <a href="index.html" class="logo">Manga<span>ice</span></a>
+
+            <!-- Search Bar (hidden on mobile, magnifying glass icon shown instead) -->
+            <div class="search-box">
+                <input type="text" placeholder="Search manhwas...">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>     
+            </div>
+
+            <!-- Mobile search icon -->
+            <a href="search.html" class="mobile-search-icon" aria-label="Search Manhwas">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </a>
+
+            <!-- User Actions (Sun/Moon Theme Toggle) -->
+            <div class="user-actions">
+                <button class="btn-icon theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">
+                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content container">
+
+        <!-- Featured / Hero Banner Section -->
+        <section class="hero-section">
+            <div class="hero-card" id="hero-banner">
+                <div class="hero-overlay"></div>
+
+                <!-- Carousel Navigation Arrows -->
+                <button id="hero-prev-btn" class="hero-arrow hero-arrow-left" aria-label="Previous Highlight">&#10094;</button>
+                <button id="hero-next-btn" class="hero-arrow hero-arrow-right" aria-label="Next Highlight">&#10095;</button>
+
+                <div class="hero-info">
+                    <span class="badge">Featured Today</span>
+                    <h1 id="hero-title">Loading Featured...</h1>
+                    <p id="hero-synopsis">Please wait while the best manhwas are loaded for you.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommended Section -->
+        <section class="catalog-section">
+            <div class="section-header">
+                <div>
+                    <h2>Recommended for You</h2>
+                    <p class="section-subtitle">Discover new titles every time you visit</p>
+                </div>
+            </div>
+
+            <!-- Loader / Loading Indicator -->
+            <div id="loading-spinner" class="spinner-container">
+                <div class="spinner"></div>
+                <p>Fetching amazing manhwas...</p>
+            </div>
+
+            <!-- Manga Grid -->
+            <div id="manga-grid" class="manga-grid">
+                <!-- Cards generated dynamically via JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Mangaice. All rights reserved.</p>
+            <p>
+                <a href="terms.html">Terms of Service</a> •
+                <a href="privacy.html">Privacy Policy</a> •
+                <a href="dmca.html">DMCA</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
