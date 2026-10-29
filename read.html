@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Dinâmico Base (Atualizado via JavaScript com Nome da Obra + Capítulo) -->
+    <title id="meta-title">Read Manhwa Chapter Online - Mangaice</title>
+    <meta id="meta-desc" name="description" content="Read full high-quality manhwa chapter online for free on Mangaice. Fast loading and high image quality.">
+    <meta name="keywords" content="manhwa, read manhwa chapter, webtoon, manga online, Mangaice">
+    <meta name="robots" content="index, follow">
+    <link id="canonical-url" rel="canonical" href="https://mangaice.com/read.html">
+
+    <!-- Open Graph / Social Sharing (WhatsApp / Discord / Previews) -->
+    <meta property="og:type" content="article">
+    <meta id="og-url" property="og:url" content="https://mangaice.com/read.html">
+    <meta id="og-title" property="og:title" content="Read Manhwa Online - Mangaice">
+    <meta id="og-desc" property="og:description" content="Read high-quality manhwa chapters online for free on Mangaice.">
+    <meta id="og-image" property="og:image" content="https://mangaice.com/assets/og-cover.jpg">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta id="twitter-title" name="twitter:title" content="Read Manhwa Online - Mangaice">
+    <meta id="twitter-desc" name="twitter:description" content="Read high-quality manhwa chapters online for free on Mangaice.">
+    <meta id="twitter-image" name="twitter:image" content="https://mangaice.com/assets/og-cover.jpg">
+
+    <!-- Theme Synchronization Script (Light / Dark Mode) -->
+    <script>
+        (function() {
+            var stored = localStorage.getItem('theme-override');
+            if (stored) {
+                if (stored === 'light') {
+                    document.documentElement.classList.add('tema-claro');
+                } else {
+                    document.documentElement.classList.remove('tema-claro');
+                }
+            } else {
+                if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('tema-claro');
+                } else {
+                    document.documentElement.classList.remove('tema-claro');
+                }
+            }
+        })();
+    </script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --text-main: #ffffff;
+            --text-secondary: #a1a1aa;
+            --header-bg: #1e1e1e;
+            --card-bg: #161616;
+            --border-color: #2a2a2a;
+            --input-bg: #222;
+        }
+
+        html.tema-claro {
+            --bg-main: #f4f4f6;
+            --text-main: #121216;
+            --text-secondary: #555560;
+            --header-bg: #ffffff;
+            --card-bg: #ffffff;
+            --border-color: #e2e2e8;
+            --input-bg: #f0f0f5;
+        }
+
+        * { box-sizing: border-box; }
+
+        /* Estrutura flex para garantir que o rodapé fica sempre no fundo */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+        }
+
+        /* Loading circle style */
+        .loader-circulo {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #2825b6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: girar 1s linear infinite;
+            margin: 100px auto;
+        }
+
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Header Fixado no Topo com Posicionamento e Transição Suave */
+        header { 
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px;
+            padding: 12px 20px; 
+            background-color: var(--header-bg); 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            z-index: 100; 
+            border-bottom: 1px solid var(--border-color); 
+            transition: transform 0.25s ease-in-out;
+        }
+
+        /* Classe para esconder o header dinamicamente ao rolar para baixo */
+        header.header-hidden {
+            transform: translateX(-50%) translateY(-100%) !important;
+        }
+
+        /* Container principal com margem no topo para compensar o header fixo */
+        .page-wrapper {
+            flex: 1;
+            width: 100%;
+            max-width: 800px;
+            margin: 60px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #leitor-container { 
+            width: 100%;
+            min-height: 50vh; 
+        }
+
+        .pagina-manga { width: 100%; display: block; height: auto; margin: 0 auto; }
+        .mensagem { padding: 40px 20px; text-align: center; color: var(--text-secondary); font-size: 1.1rem; }
+        .erro { color: #ff6b6b; }
+        
+        .nav-container { display: flex; align-items: center; gap: 10px; }
+
+        .btn-nav {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+
+        .btn-nav:hover { background-color: var(--border-color); }
+
+        .btn-nav.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        /* Footer Nav (Navegação Inferior entre Capítulos) */
+        .footer-nav {
+            width: 100%;
+            margin: 30px 0 20px 0;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ==================================
+           COMMENTS SECTION STYLES
+           ================================== */
+        .comments-section {
+            width: 100%;
+            margin: 0 auto 40px auto;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .comments-section h3 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .comment-form input, 
+        .comment-form textarea,
+        .reply-form input,
+        .reply-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .comment-form input:focus, 
+        .comment-form textarea:focus,
+        .reply-form input:focus,
+        .reply-form textarea:focus {
+            border-color: #2825b6;
+            outline: none;
+        }
+
+        .btn-comment, .btn-send-reply {
+            align-self: flex-end;
+            background-color: #2825b6;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-comment:hover, .btn-send-reply:hover {
+            background-color: #1f1d8c;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment-item {
+            background-color: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.82rem;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #2825b6;
+        }
+
+        .comment-date {
+            color: var(--text-secondary);
+        }
+
+        .comment-body {
+            color: var(--text-main);
+            font-size: 0.92rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .btn-reply-toggle, .btn-toggle-replies {
+            background: none;
+            border: none;
+            color: #2825b6;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .btn-reply-toggle:hover, .btn-toggle-replies:hover {
+            text-decoration: underline;
+        }
+
+        .comment-replies-wrapper {
+            margin-top: 10px;
+            margin-left: 0;
+            padding-left: 12px;
+            border-left: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .reply-form {
+            display: none;
+            margin-top: 10px;
+            flex-direction: column;
+            gap: 8px;
+            background-color: var(--card-bg);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mensagem-comentario {
+            color: var(--text-secondary);
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        #chapter-title, header h2 {
+            margin: 0 !important;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .btn-voltar, header a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            white-space: nowrap;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* ==================================
+           FOOTER GERAL DA PLATAFORMA
+           ================================== */
+        .footer {
+            width: 100%;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 24px 0;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-container p {
+            margin: 6px 0;
+        }
+
+        .footer-container a {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-container a:hover {
+            color: #2825b6;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <a href="#" id="btn-voltar-detalhes" class="btn-voltar btn-nav" aria-label="Back to details">← Back</a>
+        <h2 id="chapter-title">Loading ...</h2>
+        <div class="nav-container">
+            <a id="btn-prev-top" class="btn-nav disabled" href="#" aria-label="Previous Chapter">←</a>
+            <a id="btn-next-top" class="btn-nav disabled" href="#" aria-label="Next Chapter">→</a>
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <main id="leitor-container">
+            <div class="mensagem">Loading chapter pages...</div>
+        </main>
+
+        <div class="footer-nav">
+            <a id="btn-prev-bottom" class="btn-nav disabled" href="#" aria-label="Previous Chapter">←</a>
+            <a id="btn-next-bottom" class="btn-nav disabled" href="#" aria-label="Next Chapter">→</a>
+        </div>
+        
+        <!-- COMMENTS SECTION -->
+        <section class="comments-section">
+            <h3>Comments</h3>
+            
+            <form id="comment-form" class="comment-form">
+                <input type="text" id="comment-name" placeholder="Name" required autocomplete="off">
+                <textarea id="comment-text" placeholder="Write it here..." rows="3" required></textarea>
+                <button type="submit" class="btn-comment">Post comment</button>
+            </form>
+
+            <div id="comments-list" class="comments-list">
+                <div class="mensagem-comentario">Loading comments...</div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Mangaice. All rights reserved.</p>
+            <p>
+                <a href="terms.html">Terms of Service</a> • 
+                <a href="privacy.html">Privacy Policy</a> • 
+                <a href="dmca.html">DMCA</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+    const MAIN_SUPABASE_URL = "https://espwjxbeofclgvqaeuvd.supabase.co";
+    const MAIN_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzcHdqeGJlb2ZjbGd2cWFldXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxOTAzMjMsImV4cCI6MjEwNTc2NjMyM30.R2qAJ9T25y8HF5EAr8dVJopC0YYJN-X8CbgZ-e1oV4g"; 
+    const BUCKET_NAME = "chapters";
+
+    let userJaFezScroll = false;
+    let ultimoScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarCapitulo();
+        
+        const nomeInput = document.getElementById('comment-name');
+        if (nomeInput) {
+            const nomeSalvo = localStorage.getItem('mangaice_user_name');
+            if (nomeSalvo) {
+                nomeInput.value = nomeSalvo;
+            }
+
+            nomeInput.addEventListener('input', () => {
+                localStorage.setItem('mangaice_user_name', nomeInput.value.trim());
+            });
+        }
+    });
+
+    // --- FUNÇÃO PARA ATUALIZAR O SEO DO CAPÍTULO DINAMICAMENTE ---
+    async function atualizarSEOCapitulo(manhwaId, chapterNumber, customTitle) {
+        if (!manhwaId) return;
+
+        try {
+            const res = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/manhwas?id=eq.${manhwaId}&select=title,cover_url&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
+                headers: { "apikey": MAIN_SUPABASE_ANON_KEY, "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}` }
+            });
+            const data = await res.json();
+            
+            if (data && data.length > 0) {
+                const manga = data[0];
+                const nomeCapitulo = customTitle || `Chapter ${chapterNumber}`;
+                const pageTitle = `${manga.title} ${nomeCapitulo} - Read Online | Mangaice`;
+                const pageDesc = `Read ${manga.title} ${nomeCapitulo} online in high quality for free on Mangaice. Fast image loading and clean reader interface.`;
+                const currentUrl = window.location.href;
+
+                document.title = pageTitle;
+                
+                const metaTitle = document.getElementById('meta-title');
+                if (metaTitle) metaTitle.innerText = pageTitle;
+
+                const metaDesc = document.getElementById('meta-desc');
+                if (metaDesc) metaDesc.setAttribute('content', pageDesc);
+
+                const canonicalUrl = document.getElementById('canonical-url');
+                if (canonicalUrl) canonicalUrl.setAttribute('href', currentUrl);
+
+                const ogUrl = document.getElementById('og-url');
+                if (ogUrl) ogUrl.setAttribute('content', currentUrl);
+
+                const ogTitle = document.getElementById('og-title');
+                if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+
+                const ogDesc = document.getElementById('og-desc');
+                if (ogDesc) ogDesc.setAttribute('content', pageDesc);
+
+                if (manga.cover_url) {
+                    const ogImg = document.getElementById('og-image');
+                    if (ogImg) ogImg.setAttribute('content', manga.cover_url);
+
+                    const twitterImg = document.getElementById('twitter-image');
+                    if (twitterImg) twitterImg.setAttribute('content', manga.cover_url);
+                }
+
+                const twitterTitle = document.getElementById('twitter-title');
+                if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
+
+                const twitterDesc = document.getElementById('twitter-desc');
+                if (twitterDesc) twitterDesc.setAttribute('content', pageDesc);
+            }
+        } catch (e) {
+            console.error("Error updating chapter SEO:", e);
+        }
+    }
+
+    function salvarProgressoGPS(manhwaId, chapterId) {
+        if (!manhwaId || !chapterId || !userJaFezScroll) return;
+        
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const alturaTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        
+        if (alturaTotal <= 0) return;
+        
+        const scrollPercent = (scrollTop / alturaTotal) * 100;
+
+        const progresso = {
+            manhwaId: manhwaId,
+            chapterId: chapterId,
+            scrollPercent: scrollPercent,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(`progresso_manhwa_${manhwaId}`, JSON.stringify(progresso));
+    }
+
+    async function carregarComentarios(chapterId) {
+        const listaComentariosEl = document.getElementById('comments-list');
+        if (!listaComentariosEl) return;
+
+        try {
+            const url = `${MAIN_SUPABASE_URL}/rest/v1/chapter_comments?chapter_id=eq.${chapterId}&select=*&order=created_at.asc&apikey=${MAIN_SUPABASE_ANON_KEY}`;
+            
+            const response = await fetch(url, {
+                headers: {
+                    "apikey": MAIN_SUPABASE_ANON_KEY,
+                    "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}`
+                }
+            });
+
+            const comentarios = await response.json();
+
+            if (!response.ok) {
+                listaComentariosEl.innerHTML = `<div class="mensagem-comentario">Error loading comments.</div>`;
+                return;
+            }
+
+            if (!comentarios || comentarios.length === 0) {
+                listaComentariosEl.innerHTML = '<div class="mensagem-comentario">No comments, comment first!</div>';
+                return;
+            }
+
+            listaComentariosEl.innerHTML = '';
+            
+            const principais = comentarios.filter(c => !c.parent_id);
+
+            principais.forEach(com => {
+                listaComentariosEl.appendChild(criarElementoComentario(com, comentarios, chapterId));
+            });
+
+        } catch (error) {
+            console.error("Error loading comments:", error);
+            listaComentariosEl.innerHTML = '<div class="mensagem-comentario">Connection error while loading comments.</div>';
+        }
+    }
+
+    function criarElementoComentario(com, todosComentarios, chapterId) {
+        const dataFormatada = new Date(com.created_at).toLocaleDateString('en-US', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        const respostas = todosComentarios.filter(r => r.parent_id == com.id);
+        const temRespostas = respostas.length > 0;
+
+        const item = document.createElement('div');
+        item.className = 'comment-item';
+        
+        item.innerHTML = `
+            <div class="comment-header">
+                <span class="comment-author">${escapeHtml(com.user_name)}</span>
+                <span class="comment-date">${dataFormatada}</span>
+            </div>
+            <div class="comment-body">${escapeHtml(com.content)}</div>
+            
+            <div class="comment-actions">
+                <button class="btn-reply-toggle" onclick="toggleReplyBox(${com.id})">Reply</button>
+                ${temRespostas ? `<button class="btn-toggle-replies" id="btn-toggle-${com.id}" onclick="toggleRepliesVisibility(${com.id})">view ${respostas.length} ${respostas.length === 1 ? 'reply' : 'replies'}</button>` : ''}
+            </div>
+
+            <div id="reply-form-${com.id}" class="reply-form">
+                <input type="text" id="reply-name-${com.id}" placeholder="Your name" value="${localStorage.getItem('mangaice_user_name') || ''}" required autocomplete="off">
+                <textarea id="reply-text-${com.id}" placeholder="Write your reply here..." rows="2" required></textarea>
+                <button type="button" class="btn-send-reply" onclick="enviarResposta(${com.id}, ${chapterId})">Post reply</button>
+            </div>
+
+            <div class="comment-replies-wrapper" id="replies-container-${com.id}" style="display: none;"></div>
+        `;
+
+        if (temRespostas) {
+            const containerRespostas = item.querySelector(`#replies-container-${com.id}`);
+            respostas.forEach(resp => {
+                containerRespostas.appendChild(criarElementoComentario(resp, todosComentarios, chapterId));
+            });
+        }
+
+        return item;
+    }
+
+    function toggleReplyBox(commentId) {
+        const form = document.getElementById(`reply-form-${commentId}`);
+        if (form) {
+            form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+        }
+    }
+
+    function toggleRepliesVisibility(commentId) {
+        const container = document.getElementById(`replies-container-${commentId}`);
+        const btn = document.getElementById(`btn-toggle-${commentId}`);
+        
+        if (container && btn) {
+            const totalRespostas = container.children.length;
+            const textoResposta = totalRespostas === 1 ? 'reply' : 'replies';
+
+            if (container.style.display === 'none') {
+                container.style.display = 'flex';
+                btn.textContent = `hide ${totalRespostas} ${textoResposta}`;
+            } else {
+                container.style.display = 'none';
+                btn.textContent = `view ${totalRespostas} ${textoResposta}`;
+            }
+        }
+    }
+
+    async function enviarResposta(parentId, chapterId) {
+        const nomeInput = document.getElementById(`reply-name-${parentId}`);
+        const textoInput = document.getElementById(`reply-text-${parentId}`);
+        
+        if (!nomeInput.value.trim() || !textoInput.value.trim()) {
+            alert('Please fill in your name and the reply.');
+            return;
+        }
+
+        localStorage.setItem('mangaice_user_name', nomeInput.value.trim());
+
+        const novaResposta = {
+            chapter_id: parseInt(chapterId),
+            parent_id: parseInt(parentId),
+            user_name: nomeInput.value.trim(),
+            content: textoInput.value.trim()
+        };
+
+        try {
+            const response = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapter_comments?apikey=${MAIN_SUPABASE_ANON_KEY}`, {
+                method: 'POST',
+                headers: {
+                    "apikey": MAIN_SUPABASE_ANON_KEY,
+                    "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}`,
+                    "Content-Type": "application/json",
+                    "Prefer": "return=representation"
+                },
+                body: JSON.stringify(novaResposta)
+            });
+
+            if (response.ok) {
+                await carregarComentarios(chapterId); 
+            } else {
+                const erro = await response.json();
+                alert('Error sending reply: ' + (erro.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert('Connection error while sending reply.');
+        }
+    }
+
+    document.getElementById('comment-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const chapterId = urlParams.get('chapter_id');
+        const nomeInput = document.getElementById('comment-name');
+        const textoInput = document.getElementById('comment-text');
+        const btnSubmit = document.querySelector('.btn-comment');
+
+        if (!chapterId) {
+            alert('Error: Chapter ID not found in URL.');
+            return;
+        }
+
+        localStorage.setItem('mangaice_user_name', nomeInput.value.trim());
+
+        const novoComentario = {
+            chapter_id: parseInt(chapterId),
+            user_name: nomeInput.value.trim(),
+            content: textoInput.value.trim()
+        };
+
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Sending...';
+
+        try {
+            const response = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapter_comments?apikey=${MAIN_SUPABASE_ANON_KEY}`, {
+                method: 'POST',
+                headers: {
+                    "apikey": MAIN_SUPABASE_ANON_KEY,
+                    "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}`,
+                    "Content-Type": "application/json",
+                    "Prefer": "return=representation"
+                },
+                body: JSON.stringify(novoComentario)
+            });
+
+            const resultado = await response.json();
+
+            if (response.ok) {
+                nomeInput.value = localStorage.getItem('mangaice_user_name') || '';
+                textoInput.value = ''; 
+                await carregarComentarios(chapterId); 
+            } else {
+                console.error("Supabase Error:", resultado);
+                alert('Error posting: ' + (resultado.message || 'Check table permissions.'));
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert('Connection error while sending comment.');
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Post comment';
+        }
+    });
+
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    async function somarVisualizacaoCapitulo(chapterId) {
+        if (!chapterId) return;
+        try {
+            await fetch(`${MAIN_SUPABASE_URL}/rest/v1/rpc/increment_chapter_views`, {
+                method: 'POST',
+                headers: {
+                    "apikey": MAIN_SUPABASE_ANON_KEY,
+                    "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ chapter_id_param: parseInt(chapterId) })
+            });
+        } catch (err) {
+            console.error("Error counting view:", err);
+        }
+    }
+
+    async function carregarCapitulo() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const chapterId = urlParams.get('chapter_id'); 
+
+        if (!chapterId) {
+            document.getElementById('leitor-container').innerHTML = '<div class="mensagem erro">No chapter selected in URL.</div>';
+            return;
+        }
+
+        somarVisualizacaoCapitulo(chapterId);
+        carregarComentarios(chapterId);
+        document.getElementById('leitor-container').innerHTML = '<div class="loader-circulo"></div>';
+
+        try {
+            const response = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapters?id=eq.${chapterId}&select=*,storage_nodes(supabase_url,supabase_anon_key)&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
+                headers: {
+                    "apikey": MAIN_SUPABASE_ANON_KEY,
+                    "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}`
+                }
+            });
+
+            const data = await response.json();
+            if (!data || data.length === 0) {
+                document.getElementById('leitor-container').innerHTML = '<div class="mensagem erro">Chapter not found.</div>';
+                return;
+            }
+
+            const capitulo = data[0];
+            const tituloCapitulo = capitulo.title ? capitulo.title : `Chapter ${capitulo.chapter_number}`;
+            document.getElementById('chapter-title').textContent = tituloCapitulo;
+            window.currentManhwaId = capitulo.manhwa_id;
+
+            atualizarSEOCapitulo(capitulo.manhwa_id, capitulo.chapter_number, capitulo.title);
+
+            if (capitulo.manhwa_id) {
+                const btnVoltar = document.getElementById('btn-voltar-detalhes');
+                if (btnVoltar) btnVoltar.href = `details.html?id=${capitulo.manhwa_id}`;
+            }
+
+            if (capitulo.manhwa_id) {
+                const resCapitulos = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapters?manhwa_id=eq.${capitulo.manhwa_id}&select=id,chapter_number&order=chapter_number.asc&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
+                    headers: { "apikey": MAIN_SUPABASE_ANON_KEY, "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}` }
+                });
+                const listaCapitulos = await resCapitulos.json();
+
+                if (listaCapitulos && listaCapitulos.length > 0) {
+                    const indexAtual = listaCapitulos.findIndex(c => c.id == chapterId);
+                    const prevCap = indexAtual > 0 ? listaCapitulos[indexAtual - 1] : null;
+                    const nextCap = indexAtual < listaCapitulos.length - 1 ? listaCapitulos[indexAtual + 1] : null;
+
+                    if (prevCap) {
+                        ['btn-prev-top', 'btn-prev-bottom'].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) { el.href = `read.html?chapter_id=${prevCap.id}&scroll=0`; el.classList.remove('disabled'); }
+                        });
+                    }
+                    if (nextCap) {
+                        ['btn-next-top', 'btn-next-bottom'].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) { el.href = `read.html?chapter_id=${nextCap.id}&scroll=0`; el.classList.remove('disabled'); }
+                        });
+                    }
+                }
+            }
+
+            const container = document.getElementById('leitor-container');
+            container.innerHTML = '';
+
+            let storageUrl = MAIN_SUPABASE_URL;
+            let storageAnonKey = MAIN_SUPABASE_ANON_KEY;
+            let bucketName = "chapters"; 
+
+            if (capitulo.storage_nodes && capitulo.storage_nodes.supabase_url) {
+                storageUrl = capitulo.storage_nodes.supabase_url;
+                if (capitulo.storage_nodes.supabase_anon_key) {
+                    storageAnonKey = capitulo.storage_nodes.supabase_anon_key;
+                }
+            }
+
+            let nomeDaPasta = capitulo.folder_path;
+            if (nomeDaPasta.includes("?path=")) {
+                nomeDaPasta = nomeDaPasta.split("?path=")[1].split("&")[0];
+            }
+            nomeDaPasta = decodeURIComponent(nomeDaPasta.replace(/\/$/, '').replace(/\+/g, ' '));
+
+            let storageResponse = await fetch(`${storageUrl}/storage/v1/object/list/${bucketName}`, {
+                method: 'POST',
+                headers: {
+                    "apikey": storageAnonKey,
+                    "Authorization": `Bearer ${storageAnonKey}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prefix: nomeDaPasta, limit: 100, offset: 0, sortBy: { column: "name", order: "asc" } })
+            });
+
+            let ficheiros = await storageResponse.json();
+
+            if ((storageResponse.status !== 200 || !ficheiros || !Array.isArray(ficheiros) || ficheiros.length === 0) && !capitulo.storage_nodes) {
+                bucketName = "capitulos";
+                const retryResponse = await fetch(`${storageUrl}/storage/v1/object/list/${bucketName}`, {
+                    method: 'POST',
+                    headers: {
+                        "apikey": storageAnonKey,
+                        "Authorization": `Bearer ${storageAnonKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ prefix: nomeDaPasta, limit: 100, offset: 0, sortBy: { column: "name", order: "asc" } })
+                });
+                if (retryResponse.status === 200) {
+                    ficheiros = await retryResponse.json();
+                }
+            }
+
+            if (!ficheiros || !Array.isArray(ficheiros) || ficheiros.length === 0) {
+                container.innerHTML = `<div class="mensagem erro">The folder <b>"${nomeDaPasta}"</b> is empty or lacks public read permissions.</div>`;
+                return;
+            }
+
+            let imagensRenderizadas = 0;
+
+            ficheiros.forEach((ficheiro) => {
+                if (ficheiro.name === ".emptyFolderPlaceholder" || !ficheiro.name || ficheiro.name.startsWith('.')) return;
+
+                const urlImagem = `${storageUrl}/storage/v1/object/public/${bucketName}/${nomeDaPasta}/${ficheiro.name}`;
+                const imgElement = document.createElement('img');
+                imgElement.src = urlImagem;
+                imgElement.className = 'pagina-manga';
+                imgElement.alt = `Page: ${ficheiro.name}`;
+                
+                container.appendChild(imgElement);
+                imagensRenderizadas++;
+            });
+
+            if (imagensRenderizadas === 0) {
+                container.innerHTML = '<div class="mensagem">The folder does not contain valid images.</div>';
+                return;
+            }
+
+            restaurarScroll(capitulo.manhwa_id, chapterId, urlParams);
+
+        } catch (error) {
+            console.error("Fatal error:", error);
+            document.getElementById('leitor-container').innerHTML = '<div class="mensagem erro">Server connection error.</div>';
+        }
+    }
+
+    function restaurarScroll(manhwaId, chapterId, urlParams) {
+        const scrollParam = urlParams.get('scroll');
+        const progressoSalvoLocal = localStorage.getItem(`progresso_manhwa_${manhwaId}`);
+        
+        let percentagemAlvo = 0;
+        if (scrollParam !== null) {
+            percentagemAlvo = parseFloat(scrollParam);
+        } else if (progressoSalvoLocal) {
+            const dadosParsed = JSON.parse(progressoSalvoLocal);
+            if (dadosParsed.chapterId == chapterId) {
+                percentagemAlvo = dadosParsed.scrollPercent || 0;
+            }
+        }
+
+        setTimeout(() => {
+            const alturaTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            if (alturaTotal > 0 && percentagemAlvo > 0) {
+                const destinoY = (percentagemAlvo / 100) * alturaTotal;
+                window.scrollTo({ top: destinoY, behavior: 'instant' });
+            }
+            userJaFezScroll = true;
+        }, 500);
+    }
+
+    /* --- EVENTO DE SCROLL ROBUSTO PARA OCULTAR/MOSTRAR O HEADER --- */
+    window.addEventListener('scroll', () => {
+        const scrollAtual = window.pageYOffset || document.documentElement.scrollTop;
+        const header = document.getElementById('main-header');
+
+        if (header) {
+            if (scrollAtual <= 20) {
+                header.classList.remove('header-hidden');
+            } 
+            else if (scrollAtual > ultimoScroll && scrollAtual > 80) {
+                header.classList.add('header-hidden');
+            } 
+            else if (scrollAtual < ultimoScroll) {
+                header.classList.remove('header-hidden');
+            }
+        }
+
+        ultimoScroll = scrollAtual <= 0 ? 0 : scrollAtual;
+
+        if (window.currentManhwaId) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const chapterId = urlParams.get('chapter_id');
+            salvarProgressoGPS(window.currentManhwaId, chapterId);
+        }
+    }, { passive: true });
+    </script>
+</body>
+</html>
