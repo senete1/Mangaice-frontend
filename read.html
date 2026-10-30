@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- SEO Dinâmico Base (Atualizado via JavaScript com Nome da Obra + Capítulo) -->
+    <!-- SEO Dinâmico Base -->
     <title id="meta-title">Read Manhwa Chapter Online - Mangaice</title>
     <meta id="meta-desc" name="description" content="Read full high-quality manhwa chapter online for free on Mangaice. Fast loading and high image quality.">
     <meta name="keywords" content="manhwa, read manhwa chapter, webtoon, manga online, Mangaice">
     <meta name="robots" content="index, follow">
     <link id="canonical-url" rel="canonical" href="https://mangaice.com/read.html">
 
-    <!-- Open Graph / Social Sharing (WhatsApp / Discord / Previews) -->
+    <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="article">
     <meta id="og-url" property="og:url" content="https://mangaice.com/read.html">
     <meta id="og-title" property="og:title" content="Read Manhwa Online - Mangaice">
@@ -24,23 +24,12 @@
     <meta id="twitter-desc" name="twitter:description" content="Read high-quality manhwa chapters online for free on Mangaice.">
     <meta id="twitter-image" name="twitter:image" content="https://mangaice.com/assets/og-cover.jpg">
 
-    <!-- Theme Synchronization Script (Light / Dark Mode) -->
+    <!-- Theme Synchronization Script -->
     <script>
         (function() {
             var stored = localStorage.getItem('theme-override');
-            if (stored) {
-                if (stored === 'light') {
-                    document.documentElement.classList.add('tema-claro');
-                } else {
-                    document.documentElement.classList.remove('tema-claro');
-                }
-            } else {
-                if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add('tema-claro');
-                } else {
-                    document.documentElement.classList.remove('tema-claro');
-                }
-            }
+            var isLight = stored ? stored === 'light' : !window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (isLight) document.documentElement.classList.add('tema-claro');
         })();
     </script>
 
@@ -67,7 +56,6 @@
 
         * { box-sizing: border-box; }
 
-        /* Estrutura flex para garantir que o rodapé fica sempre no fundo */
         html, body {
             height: 100%;
             margin: 0;
@@ -78,7 +66,6 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
         }
 
-        /* Loading circle style */
         .loader-circulo {
             border: 4px solid rgba(255, 255, 255, 0.1);
             border-left-color: #2825b6;
@@ -94,7 +81,6 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Header Fixado no Topo com Posicionamento e Transição Suave */
         header { 
             position: fixed;
             top: 0;
@@ -112,12 +98,10 @@
             transition: transform 0.25s ease-in-out;
         }
 
-        /* Classe para esconder o header dinamicamente ao rolar para baixo */
         header.header-hidden {
             transform: translateX(-50%) translateY(-100%) !important;
         }
 
-        /* Container principal com margem no topo para compensar o header fixo */
         .page-wrapper {
             flex: 1;
             width: 100%;
@@ -158,7 +142,6 @@
             cursor: default;
         }
 
-        /* Footer Nav (Navegação Inferior entre Capítulos) */
         .footer-nav {
             width: 100%;
             margin: 30px 0 20px 0;
@@ -169,9 +152,6 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* ==================================
-           COMMENTS SECTION STYLES
-           ================================== */
         .comments-section {
             width: 100%;
             margin: 0 auto 40px auto;
@@ -340,9 +320,6 @@
             z-index: 5;
         }
 
-        /* ==================================
-           FOOTER GERAL DA PLATAFORMA
-           ================================== */
         .footer {
             width: 100%;
             background-color: var(--card-bg);
@@ -438,9 +415,7 @@
         const nomeInput = document.getElementById('comment-name');
         if (nomeInput) {
             const nomeSalvo = localStorage.getItem('mangaice_user_name');
-            if (nomeSalvo) {
-                nomeInput.value = nomeSalvo;
-            }
+            if (nomeSalvo) nomeInput.value = nomeSalvo;
 
             nomeInput.addEventListener('input', () => {
                 localStorage.setItem('mangaice_user_name', nomeInput.value.trim());
@@ -448,7 +423,7 @@
         }
     });
 
-    // --- FUNÇÃO PARA ATUALIZAR O SEO DO CAPÍTULO DINAMICAMENTE ---
+    // --- OTIMIZAÇÃO: ATUALIZAÇÃO DINÂMICA DE SEO ---
     async function atualizarSEOCapitulo(manhwaId, chapterNumber, customTitle) {
         if (!manhwaId) return;
 
@@ -466,38 +441,19 @@
                 const currentUrl = window.location.href;
 
                 document.title = pageTitle;
-                
-                const metaTitle = document.getElementById('meta-title');
-                if (metaTitle) metaTitle.innerText = pageTitle;
-
-                const metaDesc = document.getElementById('meta-desc');
-                if (metaDesc) metaDesc.setAttribute('content', pageDesc);
-
-                const canonicalUrl = document.getElementById('canonical-url');
-                if (canonicalUrl) canonicalUrl.setAttribute('href', currentUrl);
-
-                const ogUrl = document.getElementById('og-url');
-                if (ogUrl) ogUrl.setAttribute('content', currentUrl);
-
-                const ogTitle = document.getElementById('og-title');
-                if (ogTitle) ogTitle.setAttribute('content', pageTitle);
-
-                const ogDesc = document.getElementById('og-desc');
-                if (ogDesc) ogDesc.setAttribute('content', pageDesc);
+                document.getElementById('meta-title').innerText = pageTitle;
+                document.getElementById('meta-desc').setAttribute('content', pageDesc);
+                document.getElementById('canonical-url').setAttribute('href', currentUrl);
+                document.getElementById('og-url').setAttribute('content', currentUrl);
+                document.getElementById('og-title').setAttribute('content', pageTitle);
+                document.getElementById('og-desc').setAttribute('content', pageDesc);
+                document.getElementById('twitter-title').setAttribute('content', pageTitle);
+                document.getElementById('twitter-desc').setAttribute('content', pageDesc);
 
                 if (manga.cover_url) {
-                    const ogImg = document.getElementById('og-image');
-                    if (ogImg) ogImg.setAttribute('content', manga.cover_url);
-
-                    const twitterImg = document.getElementById('twitter-image');
-                    if (twitterImg) twitterImg.setAttribute('content', manga.cover_url);
+                    document.getElementById('og-image').setAttribute('content', manga.cover_url);
+                    document.getElementById('twitter-image').setAttribute('content', manga.cover_url);
                 }
-
-                const twitterTitle = document.getElementById('twitter-title');
-                if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
-
-                const twitterDesc = document.getElementById('twitter-desc');
-                if (twitterDesc) twitterDesc.setAttribute('content', pageDesc);
             }
         } catch (e) {
             console.error("Error updating chapter SEO:", e);
@@ -513,13 +469,7 @@
         if (alturaTotal <= 0) return;
         
         const scrollPercent = (scrollTop / alturaTotal) * 100;
-
-        const progresso = {
-            manhwaId: manhwaId,
-            chapterId: chapterId,
-            scrollPercent: scrollPercent,
-            timestamp: Date.now()
-        };
+        const progresso = { manhwaId, chapterId, scrollPercent, timestamp: Date.now() };
         localStorage.setItem(`progresso_manhwa_${manhwaId}`, JSON.stringify(progresso));
     }
 
@@ -528,13 +478,8 @@
         if (!listaComentariosEl) return;
 
         try {
-            const url = `${MAIN_SUPABASE_URL}/rest/v1/chapter_comments?chapter_id=eq.${chapterId}&select=*&order=created_at.asc&apikey=${MAIN_SUPABASE_ANON_KEY}`;
-            
-            const response = await fetch(url, {
-                headers: {
-                    "apikey": MAIN_SUPABASE_ANON_KEY,
-                    "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}`
-                }
+            const response = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapter_comments?chapter_id=eq.${chapterId}&select=*&order=created_at.asc&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
+                headers: { "apikey": MAIN_SUPABASE_ANON_KEY, "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}` }
             });
 
             const comentarios = await response.json();
@@ -550,12 +495,14 @@
             }
 
             listaComentariosEl.innerHTML = '';
-            
+            const fragment = document.createDocumentFragment();
             const principais = comentarios.filter(c => !c.parent_id);
 
             principais.forEach(com => {
-                listaComentariosEl.appendChild(criarElementoComentario(com, comentarios, chapterId));
+                fragment.appendChild(criarElementoComentario(com, comentarios, chapterId));
             });
+
+            listaComentariosEl.appendChild(fragment);
 
         } catch (error) {
             console.error("Error loading comments:", error);
@@ -597,9 +544,11 @@
 
         if (temRespostas) {
             const containerRespostas = item.querySelector(`#replies-container-${com.id}`);
+            const fragmentRespostas = document.createDocumentFragment();
             respostas.forEach(resp => {
-                containerRespostas.appendChild(criarElementoComentario(resp, todosComentarios, chapterId));
+                fragmentRespostas.appendChild(criarElementoComentario(resp, todosComentarios, chapterId));
             });
+            containerRespostas.appendChild(fragmentRespostas);
         }
 
         return item;
@@ -607,9 +556,7 @@
 
     function toggleReplyBox(commentId) {
         const form = document.getElementById(`reply-form-${commentId}`);
-        if (form) {
-            form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
-        }
+        if (form) form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
     }
 
     function toggleRepliesVisibility(commentId) {
@@ -675,16 +622,12 @@
     document.getElementById('comment-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const chapterId = urlParams.get('chapter_id');
+        const chapterId = new URLSearchParams(window.location.search).get('chapter_id');
         const nomeInput = document.getElementById('comment-name');
         const textoInput = document.getElementById('comment-text');
         const btnSubmit = document.querySelector('.btn-comment');
 
-        if (!chapterId) {
-            alert('Error: Chapter ID not found in URL.');
-            return;
-        }
+        if (!chapterId) return;
 
         localStorage.setItem('mangaice_user_name', nomeInput.value.trim());
 
@@ -709,14 +652,11 @@
                 body: JSON.stringify(novoComentario)
             });
 
-            const resultado = await response.json();
-
             if (response.ok) {
-                nomeInput.value = localStorage.getItem('mangaice_user_name') || '';
                 textoInput.value = ''; 
                 await carregarComentarios(chapterId); 
             } else {
-                console.error("Supabase Error:", resultado);
+                const resultado = await response.json();
                 alert('Error posting: ' + (resultado.message || 'Check table permissions.'));
             }
         } catch (error) {
@@ -730,7 +670,7 @@
 
     function escapeHtml(text) {
         const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        return text.replace(/[&<>"']/g, m => map[m]);
     }
 
     async function somarVisualizacaoCapitulo(chapterId) {
@@ -751,8 +691,7 @@
     }
 
     async function carregarCapitulo() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const chapterId = urlParams.get('chapter_id'); 
+        const chapterId = new URLSearchParams(window.location.search).get('chapter_id'); 
 
         if (!chapterId) {
             document.getElementById('leitor-container').innerHTML = '<div class="mensagem erro">No chapter selected in URL.</div>';
@@ -765,10 +704,7 @@
 
         try {
             const response = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapters?id=eq.${chapterId}&select=*,storage_nodes(supabase_url,supabase_anon_key)&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
-                headers: {
-                    "apikey": MAIN_SUPABASE_ANON_KEY,
-                    "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}`
-                }
+                headers: { "apikey": MAIN_SUPABASE_ANON_KEY, "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}` }
             });
 
             const data = await response.json();
@@ -778,7 +714,7 @@
             }
 
             const capitulo = data[0];
-            const tituloCapitulo = capitulo.title ? capitulo.title : `Chapter ${capitulo.chapter_number}`;
+            const tituloCapitulo = capitulo.title || `Chapter ${capitulo.chapter_number}`;
             document.getElementById('chapter-title').textContent = tituloCapitulo;
             window.currentManhwaId = capitulo.manhwa_id;
 
@@ -787,36 +723,33 @@
             if (capitulo.manhwa_id) {
                 const btnVoltar = document.getElementById('btn-voltar-detalhes');
                 if (btnVoltar) btnVoltar.href = `details.html?id=${capitulo.manhwa_id}`;
-            }
 
-            if (capitulo.manhwa_id) {
-                const resCapitulos = await fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapters?manhwa_id=eq.${capitulo.manhwa_id}&select=id,chapter_number&order=chapter_number.asc&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
+                // Busca paralela otimizada de capítulos vizinhos
+                fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapters?manhwa_id=eq.${capitulo.manhwa_id}&select=id,chapter_number&order=chapter_number.asc&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
                     headers: { "apikey": MAIN_SUPABASE_ANON_KEY, "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}` }
+                })
+                .then(res => res.json())
+                .then(listaCapitulos => {
+                    if (listaCapitulos && listaCapitulos.length > 0) {
+                        const indexAtual = listaCapitulos.findIndex(c => c.id == chapterId);
+                        const prevCap = indexAtual > 0 ? listaCapitulos[indexAtual - 1] : null;
+                        const nextCap = indexAtual < listaCapitulos.length - 1 ? listaCapitulos[indexAtual + 1] : null;
+
+                        if (prevCap) {
+                            ['btn-prev-top', 'btn-prev-bottom'].forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) { el.href = `read.html?chapter_id=${prevCap.id}&scroll=0`; el.classList.remove('disabled'); }
+                            });
+                        }
+                        if (nextCap) {
+                            ['btn-next-top', 'btn-next-bottom'].forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) { el.href = `read.html?chapter_id=${nextCap.id}&scroll=0`; el.classList.remove('disabled'); }
+                            });
+                        }
+                    }
                 });
-                const listaCapitulos = await resCapitulos.json();
-
-                if (listaCapitulos && listaCapitulos.length > 0) {
-                    const indexAtual = listaCapitulos.findIndex(c => c.id == chapterId);
-                    const prevCap = indexAtual > 0 ? listaCapitulos[indexAtual - 1] : null;
-                    const nextCap = indexAtual < listaCapitulos.length - 1 ? listaCapitulos[indexAtual + 1] : null;
-
-                    if (prevCap) {
-                        ['btn-prev-top', 'btn-prev-bottom'].forEach(id => {
-                            const el = document.getElementById(id);
-                            if (el) { el.href = `read.html?chapter_id=${prevCap.id}&scroll=0`; el.classList.remove('disabled'); }
-                        });
-                    }
-                    if (nextCap) {
-                        ['btn-next-top', 'btn-next-bottom'].forEach(id => {
-                            const el = document.getElementById(id);
-                            if (el) { el.href = `read.html?chapter_id=${nextCap.id}&scroll=0`; el.classList.remove('disabled'); }
-                        });
-                    }
-                }
             }
-
-            const container = document.getElementById('leitor-container');
-            container.innerHTML = '';
 
             let storageUrl = MAIN_SUPABASE_URL;
             let storageAnonKey = MAIN_SUPABASE_ANON_KEY;
@@ -824,9 +757,7 @@
 
             if (capitulo.storage_nodes && capitulo.storage_nodes.supabase_url) {
                 storageUrl = capitulo.storage_nodes.supabase_url;
-                if (capitulo.storage_nodes.supabase_anon_key) {
-                    storageAnonKey = capitulo.storage_nodes.supabase_anon_key;
-                }
+                if (capitulo.storage_nodes.supabase_anon_key) storageAnonKey = capitulo.storage_nodes.supabase_anon_key;
             }
 
             let nomeDaPasta = capitulo.folder_path;
@@ -837,49 +768,43 @@
 
             let storageResponse = await fetch(`${storageUrl}/storage/v1/object/list/${bucketName}`, {
                 method: 'POST',
-                headers: {
-                    "apikey": storageAnonKey,
-                    "Authorization": `Bearer ${storageAnonKey}`,
-                    "Content-Type": "application/json"
-                },
+                headers: { "apikey": storageAnonKey, "Authorization": `Bearer ${storageAnonKey}`, "Content-Type": "application/json" },
                 body: JSON.stringify({ prefix: nomeDaPasta, limit: 100, offset: 0, sortBy: { column: "name", order: "asc" } })
             });
 
             let ficheiros = await storageResponse.json();
 
-            if ((storageResponse.status !== 200 || !ficheiros || !Array.isArray(ficheiros) || ficheiros.length === 0) && !capitulo.storage_nodes) {
+            if ((storageResponse.status !== 200 || !Array.isArray(ficheiros) || ficheiros.length === 0) && !capitulo.storage_nodes) {
                 bucketName = "capitulos";
                 const retryResponse = await fetch(`${storageUrl}/storage/v1/object/list/${bucketName}`, {
                     method: 'POST',
-                    headers: {
-                        "apikey": storageAnonKey,
-                        "Authorization": `Bearer ${storageAnonKey}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "apikey": storageAnonKey, "Authorization": `Bearer ${storageAnonKey}`, "Content-Type": "application/json" },
                     body: JSON.stringify({ prefix: nomeDaPasta, limit: 100, offset: 0, sortBy: { column: "name", order: "asc" } })
                 });
-                if (retryResponse.status === 200) {
-                    ficheiros = await retryResponse.json();
-                }
+                if (retryResponse.status === 200) ficheiros = await retryResponse.json();
             }
+
+            const container = document.getElementById('leitor-container');
+            container.innerHTML = '';
 
             if (!ficheiros || !Array.isArray(ficheiros) || ficheiros.length === 0) {
                 container.innerHTML = `<div class="mensagem erro">The folder <b>"${nomeDaPasta}"</b> is empty or lacks public read permissions.</div>`;
                 return;
             }
 
+            // Otimização: Renderização em lote com Fragment para evitar travamentos nas imagens
+            const fragmentImagens = document.createDocumentFragment();
             let imagensRenderizadas = 0;
 
             ficheiros.forEach((ficheiro) => {
                 if (ficheiro.name === ".emptyFolderPlaceholder" || !ficheiro.name || ficheiro.name.startsWith('.')) return;
 
-                const urlImagem = `${storageUrl}/storage/v1/object/public/${bucketName}/${nomeDaPasta}/${ficheiro.name}`;
                 const imgElement = document.createElement('img');
-                imgElement.src = urlImagem;
+                imgElement.src = `${storageUrl}/storage/v1/object/public/${bucketName}/${nomeDaPasta}/${ficheiro.name}`;
                 imgElement.className = 'pagina-manga';
                 imgElement.alt = `Page: ${ficheiro.name}`;
                 
-                container.appendChild(imgElement);
+                fragmentImagens.appendChild(imgElement);
                 imagensRenderizadas++;
             });
 
@@ -888,7 +813,8 @@
                 return;
             }
 
-            restaurarScroll(capitulo.manhwa_id, chapterId, urlParams);
+            container.appendChild(fragmentImagens);
+            restaurarScroll(capitulo.manhwa_id, chapterId, new URLSearchParams(window.location.search));
 
         } catch (error) {
             console.error("Fatal error:", error);
@@ -905,22 +831,18 @@
             percentagemAlvo = parseFloat(scrollParam);
         } else if (progressoSalvoLocal) {
             const dadosParsed = JSON.parse(progressoSalvoLocal);
-            if (dadosParsed.chapterId == chapterId) {
-                percentagemAlvo = dadosParsed.scrollPercent || 0;
-            }
+            if (dadosParsed.chapterId == chapterId) percentagemAlvo = dadosParsed.scrollPercent || 0;
         }
 
         setTimeout(() => {
             const alturaTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             if (alturaTotal > 0 && percentagemAlvo > 0) {
-                const destinoY = (percentagemAlvo / 100) * alturaTotal;
-                window.scrollTo({ top: destinoY, behavior: 'instant' });
+                window.scrollTo({ top: (percentagemAlvo / 100) * alturaTotal, behavior: 'instant' });
             }
             userJaFezScroll = true;
         }, 500);
     }
 
-    /* --- EVENTO DE SCROLL ROBUSTO PARA OCULTAR/MOSTRAR O HEADER --- */
     window.addEventListener('scroll', () => {
         const scrollAtual = window.pageYOffset || document.documentElement.scrollTop;
         const header = document.getElementById('main-header');
@@ -928,11 +850,9 @@
         if (header) {
             if (scrollAtual <= 20) {
                 header.classList.remove('header-hidden');
-            } 
-            else if (scrollAtual > ultimoScroll && scrollAtual > 80) {
+            } else if (scrollAtual > ultimoScroll && scrollAtual > 80) {
                 header.classList.add('header-hidden');
-            } 
-            else if (scrollAtual < ultimoScroll) {
+            } else if (scrollAtual < ultimoScroll) {
                 header.classList.remove('header-hidden');
             }
         }
@@ -940,9 +860,7 @@
         ultimoScroll = scrollAtual <= 0 ? 0 : scrollAtual;
 
         if (window.currentManhwaId) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const chapterId = urlParams.get('chapter_id');
-            salvarProgressoGPS(window.currentManhwaId, chapterId);
+            salvarProgressoGPS(window.currentManhwaId, new URLSearchParams(window.location.search).get('chapter_id'));
         }
     }, { passive: true });
     </script>
