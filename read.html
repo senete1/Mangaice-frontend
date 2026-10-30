@@ -192,6 +192,7 @@
             transition: border-color 0.2s;
         }
 
+        /* Textarea inteligente: impede manipulação manual feia, permitindo scroll vertical automático */
         .comment-form textarea,
         .reply-form textarea {
             resize: none;
@@ -231,6 +232,7 @@
             gap: 16px;
         }
 
+        /* Comentário individual limpo (Sem caixas ao redor) */
         .comment-item {
             display: flex;
             flex-direction: column;
@@ -284,6 +286,7 @@
             text-decoration: underline;
         }
 
+        /* Wrapper de Respostas com linha vertical estilo YouTube */
         .comment-replies-wrapper {
             margin-top: 8px;
             margin-left: 12px;
@@ -433,6 +436,7 @@
             });
         }
 
+        // Auto-expand global para todos os textareas de comentários e respostas
         document.addEventListener('input', (e) => {
             if (e.target.tagName.toLowerCase() === 'textarea') {
                 e.target.style.height = 'auto';
@@ -527,6 +531,7 @@
         }
     }
 
+    // Função recursiva com controle de nível para evitar árvore infinita muito estreita
     function criarElementoComentario(com, todosComentarios, chapterId, nivel) {
         const dataFormatada = new Date(com.created_at).toLocaleDateString('en-US', {
             day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -538,6 +543,7 @@
         const item = document.createElement('div');
         item.className = 'comment-item';
         
+        // Limita o nível de resposta aninhada até o segundo nível (nível 2), se ultrapassar, renderiza sem aba de reply própria para manter espaço
         const permitirReply = nivel < 2;
 
         item.innerHTML = `
@@ -674,7 +680,7 @@
 
             if (response.ok) {
                 textoInput.value = ''; 
-                textoInput.style.height = 'auto';
+                textoInput.style.height = 'auto'; // Reseta altura do textarea
                 await carregarComentarios(chapterId); 
             } else {
                 const resultado = await response.json();
@@ -815,22 +821,13 @@
             const fragmentImagens = document.createDocumentFragment();
             let imagensRenderizadas = 0;
 
-            // OTIMIZAÇÃO ULTRA-RÁPIDA DAS FOTOS
-            ficheiros.forEach((ficheiro, index) => {
+            ficheiros.forEach((ficheiro) => {
                 if (ficheiro.name === ".emptyFolderPlaceholder" || !ficheiro.name || ficheiro.name.startsWith('.')) return;
 
                 const imgElement = document.createElement('img');
                 imgElement.src = `${storageUrl}/storage/v1/object/public/${bucketName}/${nomeDaPasta}/${ficheiro.name}`;
                 imgElement.className = 'pagina-manga';
                 imgElement.alt = `Page: ${ficheiro.name}`;
-                
-                // Prioridade máxima nas 3 primeiras fotos, lazy loading nas demais para máxima velocidade
-                if (index < 3) {
-                    imgElement.setAttribute('fetchpriority', 'high');
-                } else {
-                    imgElement.loading = 'lazy';
-                    imgElement.decoding = 'async';
-                }
                 
                 fragmentImagens.appendChild(imgElement);
                 imagensRenderizadas++;
