@@ -266,9 +266,26 @@
             color: #ffffff;
         }
 
+        /* Estilo para as estatísticas superiores (Estrela amarela e Olho cinzento) */
+        .details-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+
+        .details-stats .stat-item:nth-child(1) {
+            color: #fbbf24; /* Estrela amarela */
+        }
+
+        .details-stats .stat-item:nth-child(2) {
+            color: var(--text-secondary); /* Olho e número cinzentos perto da capa */
+        }
+
+        /* Estilo para o contador de visualizações nos capítulos */
         .chapter-views-count {
             font-size: 0.82rem;
-            color: var(--text-secondary); /* Atualizado para a cor cinza secundária */
+            color: var(--text-secondary); /* Olho e número cinzentos na lista */
             font-weight: 600;
             display: flex;
             align-items: center;
