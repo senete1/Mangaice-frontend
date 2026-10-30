@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -491,59 +490,87 @@
 
         const TAMANHO_PAGINA = 20;
 
-        // --- SEO DINÂMICO ---
-        async function carregarMetadadosSEO(id) {
+        // --- CARREGAR DETALHES E SEO DO MANHWA ---
+        async function carregarDetalhesManhwa(id) {
             if (!id) return;
 
-            const { data: manga } = await supabase
+            const { data: manga, error } = await supabase
                 .from('manhwas')
-                .select('title, synopsis, cover_url')
+                .select('*')
                 .eq('id', id)
                 .single();
 
-            if (manga) {
-                const pageTitle = `${manga.title} - Read Online | Mangaice`;
+            if (error || !manga) return;
 
-                const pageDesc = manga.synopsis
-                    ? manga.synopsis.slice(0, 160) + '...'
-                    : `Read ${manga.title} online with high quality chapters on Mangaice.`;
+            // Preencher dados na tela
+            const titleEl = document.getElementById('details-title');
+            if (titleEl) titleEl.innerText = manga.title || 'Untitled';
 
-                const currentUrl = window.location.href;
+            const coverEl = document.getElementById('details-cover');
+            if (coverEl && manga.cover_url) coverEl.src = manga.cover_url;
 
-                document.title = pageTitle;
+            const ratingEl = document.getElementById('details-rating');
+            if (ratingEl) ratingEl.innerText = manga.rating || '0.0';
 
-                const metaTitle = document.getElementById('meta-title');
-                if (metaTitle) metaTitle.innerText = pageTitle;
+            const viewsEl = document.getElementById('details-views');
+            if (viewsEl) viewsEl.innerText = manga.views || '0';
 
-                const metaDesc = document.getElementById('meta-desc');
-                if (metaDesc) metaDesc.setAttribute('content', pageDesc);
+            const yearEl = document.getElementById('details-year');
+            if (yearEl) yearEl.innerText = manga.release_year || manga.year || 'N/A';
 
-                const canonicalUrl = document.getElementById('canonical-url');
-                if (canonicalUrl) canonicalUrl.setAttribute('href', currentUrl);
+            const statusEl = document.getElementById('details-status');
+            if (statusEl) statusEl.innerText = manga.status || 'Ongoing';
 
-                const ogUrl = document.getElementById('og-url');
-                if (ogUrl) ogUrl.setAttribute('content', currentUrl);
+            const authorEl = document.getElementById('details-author');
+            if (authorEl) authorEl.innerText = manga.author || 'Unknown';
 
-                const ogTitle = document.getElementById('og-title');
-                if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+            const synopsisEl = document.getElementById('details-synopsis');
+            if (synopsisEl) synopsisEl.innerText = manga.synopsis || 'No synopsis available.';
 
-                const ogDesc = document.getElementById('og-desc');
-                if (ogDesc) ogDesc.setAttribute('content', pageDesc);
-
-                if (manga.cover_url) {
-                    const ogImg = document.getElementById('og-image');
-                    if (ogImg) ogImg.setAttribute('content', manga.cover_url);
-
-                    const twitterImg = document.getElementById('twitter-image');
-                    if (twitterImg) twitterImg.setAttribute('content', manga.cover_url);
-                }
-
-                const twitterTitle = document.getElementById('twitter-title');
-                if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
-
-                const twitterDesc = document.getElementById('twitter-desc');
-                if (twitterDesc) twitterDesc.setAttribute('content', pageDesc);
+            // Renderizar Tags
+            const tagsContainer = document.getElementById('details-tags');
+            if (tagsContainer && manga.tags && Array.isArray(manga.tags)) {
+                tagsContainer.innerHTML = manga.tags.map(tag => `<span class="tag-badge" style="display:inline-block; padding:3px 8px; margin:2px; background:var(--card-bg); border:1px solid var(--border-color); border-radius:4px; font-size:0.75rem; color:var(--text-secondary);">${tag}</span>`).join('');
             }
+
+            // Metadados SEO
+            const pageTitle = `${manga.title} - Read Online | Mangaice`;
+            const pageDesc = manga.synopsis ? manga.synopsis.slice(0, 160) + '...' : `Read ${manga.title} online with high quality chapters on Mangaice.`;
+            const currentUrl = window.location.href;
+
+            document.title = pageTitle;
+
+            const metaTitle = document.getElementById('meta-title');
+            if (metaTitle) metaTitle.innerText = pageTitle;
+
+            const metaDesc = document.getElementById('meta-desc');
+            if (metaDesc) metaDesc.setAttribute('content', pageDesc);
+
+            const canonicalUrl = document.getElementById('canonical-url');
+            if (canonicalUrl) canonicalUrl.setAttribute('href', currentUrl);
+
+            const ogUrl = document.getElementById('og-url');
+            if (ogUrl) ogUrl.setAttribute('content', currentUrl);
+
+            const ogTitle = document.getElementById('og-title');
+            if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+
+            const ogDesc = document.getElementById('og-desc');
+            if (ogDesc) ogDesc.setAttribute('content', pageDesc);
+
+            if (manga.cover_url) {
+                const ogImg = document.getElementById('og-image');
+                if (ogImg) ogImg.setAttribute('content', manga.cover_url);
+
+                const twitterImg = document.getElementById('twitter-image');
+                if (twitterImg) twitterImg.setAttribute('content', manga.cover_url);
+            }
+
+            const twitterTitle = document.getElementById('twitter-title');
+            if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
+
+            const twitterDesc = document.getElementById('twitter-desc');
+            if (twitterDesc) twitterDesc.setAttribute('content', pageDesc);
         }
 
         // --- CARREGAR CAPÍTULOS ---
@@ -559,7 +586,8 @@
                 return;
             }
 
-            carregarMetadadosSEO(manhwaId);
+            // Carrega os detalhes e o SEO da obra
+            await carregarDetalhesManhwa(manhwaId);
 
             const { data: chapters, error } = await supabase
                 .from('chapters')
