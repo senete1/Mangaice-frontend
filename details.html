@@ -266,11 +266,9 @@
             color: #ffffff;
         }
 
-        /* Utiliza a variável dinâmica do tema para garantir legibilidade no modo claro e escuro */
         .chapter-views-count {
             font-size: 0.82rem;
             color: var(--text-secondary);
-            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -313,7 +311,10 @@
                 <div class="details-tags" id="details-tags"></div>
                 <div class="details-stats">
                     <span class="stat-item" title="Rating">★ <strong id="details-rating">0.0</strong></span>
-                    <span class="stat-item" title="Views" style="color: var(--text-secondary);"> <">0</strong></span>
+                    <span class="stat-item" title="Views">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> 
+                        <strong id="details-views">0</strong>
+                    </span>
                 </div>
                 <div class="details-meta" style="margin-top: 0.5rem;">
                     <span>Publication: <strong id="details-year">...</strong></span> • 
@@ -389,7 +390,7 @@
         if (!id) return;
         const { data: manga } = await supabase
           .from('manhwas')
-          .select('title, synopsis, cover_url, rating, views, release_year, year, status, author, tags')
+          .select('title, synopsis, cover_url')
           .eq('id', id)
           .single();
 
@@ -397,22 +398,6 @@
           const pageTitle = `${manga.title} - Read Online | Mangaice`;
           const pageDesc = manga.synopsis ? manga.synopsis.slice(0, 160) + '...' : `Read ${manga.title} online with high quality chapters on Mangaice.`;
           const currentUrl = window.location.href;
-
-          // Atualizar Dados na UI Principal
-          document.getElementById('details-title').innerText = manga.title || 'Untitled';
-          if (manga.cover_url) document.getElementById('details-cover').src = manga.cover_url;
-          document.getElementById('details-rating').innerText = manga.rating || '0.0';
-          document.getElementById('details-views').innerText = manga.views || '0';
-          document.getElementById('details-year').innerText = manga.release_year || manga.year || 'N/A';
-          document.getElementById('details-status').innerText = manga.status || 'Ongoing';
-          document.getElementById('details-author').innerText = manga.author || 'Unknown';
-          document.getElementById('details-synopsis').innerText = manga.synopsis || 'No synopsis available.';
-
-          // Tags
-          const tagsContainer = document.getElementById('details-tags');
-          if (tagsContainer && manga.tags && Array.isArray(manga.tags)) {
-            tagsContainer.innerHTML = manga.tags.map(tag => `<span class="tag-badge" style="display:inline-block; padding:3px 8px; margin:2px 4px 4px 0; background:var(--card-bg); border:1px solid var(--border-color); border-radius:4px; font-size:0.75rem; color:var(--text-secondary);">${tag}</span>`).join('');
-          }
 
           // Atualizar Title e Description
           document.title = pageTitle;
@@ -462,7 +447,7 @@
           return;
         }
 
-        // Carrega o SEO e os dados principais
+        // Carrega o SEO no momento em que abre a obra
         carregarMetadadosSEO(manhwaId);
 
         const { data: chapters, error } = await supabase
@@ -528,9 +513,16 @@
           const title = ch.title ? ch.title : `Chapter ${ch.chapter_number}`;
           const totalViews = ch.views || 0;
 
+          // Usando SVG no lugar do emoji de olho em cada capítulo da lista
           chapterLink.innerHTML = `
             <div><strong style="display: block; font-size: 1rem;">${title}</strong></div>
-            <div class="chapter-views-count">👁 ${totalViews}</div>
+            <div class="chapter-views-count" style="display: flex; align-items: center; gap: 4px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>${totalViews}</span>
+            </div>
           `;
           listContainer.appendChild(chapterLink);
         });
