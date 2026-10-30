@@ -9,23 +9,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Theme Synchronization Script (Light / Dark Mode) -->
+    <!-- Theme Synchronization Script -->
     <script>
         (function() {
             var stored = localStorage.getItem('theme-override');
-            if (stored) {
-                if (stored === 'light') {
-                    document.documentElement.classList.add('tema-claro');
-                } else {
-                    document.documentElement.classList.remove('tema-claro');
-                }
-            } else {
-                if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add('tema-claro');
-                } else {
-                    document.documentElement.classList.remove('tema-claro');
-                }
-            }
+            var isLight = stored ? stored === 'light' : !window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (isLight) document.documentElement.classList.add('tema-claro');
         })();
     </script>
 
@@ -124,9 +113,7 @@
             flex-shrink: 0;
         }
 
-        .filter-toggle-btn:hover {
-            opacity: 0.8;
-        }
+        .filter-toggle-btn:hover { opacity: 0.8; }
 
         .tags-dropdown {
             display: none;
@@ -146,9 +133,7 @@
             box-sizing: border-box;
         }
 
-        .tags-dropdown.active {
-            display: block;
-        }
+        .tags-dropdown.active { display: block; }
 
         .tags-dropdown h4 {
             font-size: 0.95rem;
@@ -159,11 +144,7 @@
             padding-bottom: 0.5rem;
         }
 
-        .tags-list-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+        .tags-list-grid { display: flex; flex-direction: column; gap: 0.5rem; }
 
         .tags-list-grid label {
             font-size: 0.85rem;
@@ -174,10 +155,7 @@
             cursor: pointer;
         }
 
-        .tags-list-grid input[type="checkbox"] {
-            accent-color: #2825b6;
-            cursor: pointer;
-        }
+        .tags-list-grid input[type="checkbox"] { accent-color: #2825b6; cursor: pointer; }
 
         .apply-dropdown-btn {
             width: 100%;
@@ -190,17 +168,9 @@
             font-weight: 600;
             cursor: pointer;
         }
+        .apply-dropdown-btn:hover { opacity: 0.9; }
 
-        .apply-dropdown-btn:hover {
-            opacity: 0.9;
-        }
-
-        .active-tags-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
-        }
+        .active-tags-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
 
         .tag-chip {
             background-color: rgba(40, 37, 182, 0.15);
@@ -212,21 +182,10 @@
             font-weight: 500;
         }
 
-        .main-content {
-            padding: 1.5rem 0;
-        }
+        .main-content { padding: 1.5rem 0; }
 
-        .section-header h2 {
-            font-size: 1.25rem;
-            margin: 0 0 0.25rem 0;
-            color: var(--text-main, #fff);
-        }
-
-        .section-subtitle {
-            font-size: 0.85rem;
-            color: var(--text-secondary, #a0a0ab);
-            margin: 0;
-        }
+        .section-header h2 { font-size: 1.25rem; margin: 0 0 0.25rem 0; color: var(--text-main, #fff); }
+        .section-subtitle { font-size: 0.85rem; color: var(--text-secondary, #a0a0ab); margin: 0; }
 
         .manga-grid {
             display: grid;
@@ -236,17 +195,11 @@
         }
 
         @media (min-width: 480px) {
-            .manga-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 1rem;
-            }
+            .manga-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
         }
 
         @media (min-width: 768px) {
-            .manga-grid {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-                gap: 1.5rem;
-            }
+            .manga-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
         }
 
         .manga-card {
@@ -260,23 +213,10 @@
             color: inherit;
             transition: transform 0.2s, border-color 0.2s;
         }
+        .manga-card:hover { border-color: #2825b6; }
 
-        .manga-card:hover {
-            border-color: #2825b6;
-        }
-
-        .card-cover {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 3/4;
-            background-color: #2a2a35;
-        }
-
-        .card-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .card-cover { position: relative; width: 100%; aspect-ratio: 3/4; background-color: #2a2a35; }
+        .card-cover img { width: 100%; height: 100%; object-fit: cover; }
 
         .card-rating {
             position: absolute;
@@ -290,14 +230,7 @@
             font-weight: 600;
         }
 
-        .card-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-            padding: 0.5rem;
-            flex: 1;
-        }
-
+        .card-details { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.5rem; flex: 1; }
         .card-title {
             font-size: 0.85rem;
             font-weight: 600;
@@ -309,19 +242,8 @@
             overflow: hidden;
         }
 
-        .card-chapters {
-            font-size: 0.75rem;
-            color: #2825b6;
-            font-weight: 600;
-            margin-top: auto;
-        }
-
-        .home-btn {
-            color: var(--text-main, #fff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .card-chapters { font-size: 0.75rem; color: #2825b6; font-weight: 600; margin-top: auto; }
+        .home-btn { color: var(--text-main, #fff); display: flex; align-items: center; justify-content: center; }
 
         footer {
             text-align: left;
@@ -331,15 +253,8 @@
             color: var(--text-muted, #80808a);
             font-size: 0.8rem;
         }
-
-        footer a {
-            color: var(--text-secondary, #a0a0ab);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
+        footer a { color: var(--text-secondary, #a0a0ab); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -384,9 +299,7 @@
             </div>
         </div>
 
-        <div class="manga-grid" id="resultado-grid">
-            <!-- Clean content by default -->
-        </div>
+        <div class="manga-grid" id="resultado-grid"></div>
     </main>
 
     <script>
@@ -425,12 +338,10 @@
 
         if (searchBtnPage) {
             searchBtnPage.style.cursor = 'pointer';
-            searchBtnPage.addEventListener('click', () => executarPesquisaComTags());
+            searchBtnPage.addEventListener('click', executarPesquisaComTags);
         }
 
-        document.getElementById('btn-aplicar-dropdown').addEventListener('click', () => {
-            executarPesquisaComTags();
-        });
+        document.getElementById('btn-aplicar-dropdown').addEventListener('click', executarPesquisaComTags);
 
         function executarPesquisaComTags() {
             const textoBusca = searchInputPage.value.trim();
@@ -450,7 +361,6 @@
                     headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` }
                 });
                 const dados = await resposta.json();
-
                 const setTagsUnicas = new Set();
 
                 if (Array.isArray(dados)) {
@@ -467,21 +377,17 @@
                 containerTags.innerHTML = '';
 
                 if (setTagsUnicas.size > 0) {
-                    const tagsOrdenadas = Array.from(setTagsUnicas).sort();
-
-                    tagsOrdenadas.forEach(tag => {
+                    const fragment = document.createDocumentFragment();
+                    Array.from(setTagsUnicas).sort().forEach(tag => {
                         const isChecked = tagsUrl.includes(tag) ? 'checked' : '';
-                        containerTags.innerHTML += `
-                            <label>
-                                <input type="checkbox" name="tag-filter" value="${tag}" ${isChecked}>
-                                ${tag}
-                            </label>
-                        `;
+                        const label = document.createElement('label');
+                        label.innerHTML = `<input type="checkbox" name="tag-filter" value="${tag}" ${isChecked}> ${tag}`;
+                        fragment.appendChild(label);
                     });
+                    containerTags.appendChild(fragment);
                 } else {
                     containerTags.innerHTML = '<span style="font-size: 0.85rem; color: var(--text-secondary);">No tags found.</span>';
                 }
-
             } catch (erro) {
                 console.error("Error loading tags:", erro);
             }
@@ -495,45 +401,31 @@
             }
 
             let endpoint = `${supabaseUrl}/rest/v1/manhwas?select=*`;
-            let descricoes = [];
-
-            if (termoInicial) {
-                endpoint += `&title=ilike.*${encodeURIComponent(termoInicial)}*`;
-                descricoes.push(`Term: "${termoInicial}"`);
-            }
+            if (termoInicial) endpoint += `&title=ilike.*${encodeURIComponent(termoInicial)}*`;
+            if (tagsUrl.length > 0) endpoint += `&tags=ov.{${tagsUrl.join(',')}}`;
 
             if (tagsUrl.length > 0) {
-                endpoint += `&tags=ov.{${tagsUrl.join(',')}}`;
-                
                 chipsContainer.innerHTML = '';
+                const fragmentChips = document.createDocumentFragment();
                 tagsUrl.forEach(t => {
-                    chipsContainer.innerHTML += `<span class="tag-chip">#${t}</span>`;
+                    const chip = document.createElement('span');
+                    chip.className = 'tag-chip';
+                    chip.textContent = `#${t}`;
+                    fragmentChips.appendChild(chip);
                 });
+                chipsContainer.appendChild(fragmentChips);
             }
 
-            if (descricoes.length > 0 || tagsUrl.length > 0) {
-                termoElemento.textContent = `Showing filtered results`;
-            }
-
+            termoElemento.textContent = "Showing filtered results";
             gridResultados.innerHTML = '<p style="color: var(--text-secondary); grid-column: 1 / -1;">Searching...</p>';
 
             try {
                 const [respManhwas, respChapters] = await Promise.all([
                     fetch(endpoint, {
-                        method: 'GET',
-                        headers: {
-                            'apikey': supabaseKey,
-                            'Authorization': `Bearer ${supabaseKey}`,
-                            'Content-Type': 'application/json'
-                        }
+                        headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' }
                     }),
                     fetch(`${supabaseUrl}/rest/v1/chapters?select=manhwa_id`, {
-                        method: 'GET',
-                        headers: {
-                            'apikey': supabaseKey,
-                            'Authorization': `Bearer ${supabaseKey}`,
-                            'Content-Type': 'application/json'
-                        }
+                        headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' }
                     })
                 ]);
 
@@ -557,29 +449,30 @@
                 gridResultados.innerHTML = "";
 
                 if (Array.isArray(resultados) && resultados.length > 0) {
+                    const fragmentCards = document.createDocumentFragment();
+
                     resultados.forEach(manga => {
-                        let totalCaps = mapaContagem[manga.id] || 0;
-                        let textoCapitulos = 'No chapters';
+                        const totalCaps = mapaContagem[manga.id] || 0;
+                        const textoCapitulos = totalCaps > 0 ? `${totalCaps} ${totalCaps === 1 ? 'Chapter' : 'Chapters'}` : 'No chapters';
 
-                        if (totalCaps > 0) {
-                            textoCapitulos = `${totalCaps} ${totalCaps === 1 ? 'Chapter' : 'Chapters'}`;
-                        }
+                        const card = document.createElement('a');
+                        card.href = `details.html?id=${manga.id}`;
+                        card.className = 'manga-card';
 
-                        gridResultados.innerHTML += `
-                            <a href="details.html?id=${manga.id}" class="manga-card">
-                                <div class="card-cover">
-                                    <img src="${manga.cover_url}" alt="${manga.title}" onerror="this.src='assets/default-cover.jpg'">
-                                    <div class="card-rating">
-                                        ★ ${manga.rating || '0.0'}
-                                    </div>
-                                </div>
-                                <div class="card-details">
-                                    <h3 class="card-title">${manga.title}</h3>
-                                    <span class="card-chapters">${textoCapitulos}</span>
-                                </div>
-                            </a>
+                        card.innerHTML = `
+                            <div class="card-cover">
+                                <img src="${manga.cover_url || ''}" alt="${manga.title}" onerror="this.src='assets/default-cover.jpg'">
+                                <div class="card-rating">★ ${manga.rating || '0.0'}</div>
+                            </div>
+                            <div class="card-details">
+                                <h3 class="card-title">${manga.title}</h3>
+                                <span class="card-chapters">${textoCapitulos}</span>
+                            </div>
                         `;
+                        fragmentCards.appendChild(card);
                     });
+
+                    gridResultados.appendChild(fragmentCards);
                 } else {
                     gridResultados.innerHTML = `<p style="color: var(--text-secondary); grid-column: 1 / -1; font-size: 0.9rem;">No manhwa found.</p>`;
                 }
@@ -589,9 +482,7 @@
             }
         }
 
-        carregarTagsAutomaticas().then(() => {
-            carregarManhwas();
-        });
+        carregarTagsAutomaticas().then(carregarManhwas);
     </script>
 
     <footer>
