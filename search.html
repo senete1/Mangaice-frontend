@@ -41,7 +41,6 @@
             --text-secondary: #555560;
         }
 
-        /* Container ajustado idêntico à Home para alinhar perfeitamente os cards */
         .container {
             width: 100%;
             max-width: 1280px;
@@ -116,7 +115,7 @@
 
         .filter-toggle-btn:hover { opacity: 0.8; }
 
-        /* CORREÇÃO DO DROPDOWN: Alinhado à direita no mobile para não quebrar a tela */
+        /* DROPDOWN DE TAGS COM BOTÃO FIXO NA BASE */
         .tags-dropdown {
             display: none;
             position: absolute;
@@ -130,9 +129,9 @@
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             z-index: 1000;
-            padding: 1rem;
+            padding: 1rem 1rem 4.5rem 1rem;
             overflow-y: auto;
-            max-height: 350px;
+            max-height: 380px;
             box-sizing: border-box;
         }
 
@@ -169,15 +168,20 @@
         .tags-list-grid input[type="checkbox"] { accent-color: #2825b6; cursor: pointer; }
 
         .apply-dropdown-btn {
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            margin-top: 1rem;
+            margin: 0;
             background-color: #2825b6;
             color: white;
             border: none;
-            padding: 0.6rem;
-            border-radius: 6px;
+            border-top: 1px solid var(--border-color, #2a2a35);
+            padding: 0.75rem;
             font-weight: 600;
             cursor: pointer;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
         .apply-dropdown-btn:hover { opacity: 0.9; }
 
@@ -198,7 +202,7 @@
         .section-header h2 { font-size: 1.5rem; margin: 0 0 0.25rem 0; color: var(--text-main, #fff); }
         .section-subtitle { font-size: 0.85rem; color: var(--text-secondary, #a0a0ab); margin: 0; }
 
-        /* GRID CORRIGIDO IDÊNTICO À HOME */
+        /* GRID ALINHADO À HOME */
         .manga-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -460,7 +464,7 @@
 
                 gridResultados.innerHTML = "";
 
-                if (Array.isArray(resultados) && resultados.options !== 0 && resultados.length > 0) {
+                if (Array.isArray(resultados) && resultados.length > 0) {
                     const fragmentCards = document.createDocumentFragment();
 
                     resultados.forEach(manga => {
