@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- SEO Dinâmico Base (Será atualizado pelo JS com os dados do Mangá) -->
+    <!-- SEO Dinâmico Base -->
     <title id="meta-title">Mangaice - Read Manhwa Online</title>
     <meta id="meta-desc" name="description" content="Read manhwas and webtoons online on Mangaice with high quality and daily updates.">
     <meta name="keywords" content="manhwa, webtoon, read manhwa online, manga, Mangaice">
@@ -29,23 +29,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Theme Synchronization Script (Light / Dark Mode) -->
+    <!-- Theme Synchronization Script -->
     <script>
         (function() {
             var stored = localStorage.getItem('theme-override');
-            if (stored) {
-                if (stored === 'light') {
-                    document.documentElement.classList.add('tema-claro');
-                } else {
-                    document.documentElement.classList.remove('tema-claro');
-                }
-            } else {
-                if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add('tema-claro');
-                } else {
-                    document.documentElement.classList.remove('tema-claro');
-                }
-            }
+            var isLight = stored ? stored === 'light' : !window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (isLight) document.documentElement.classList.add('tema-claro');
         })();
     </script>
 
@@ -76,7 +65,6 @@
             transition: background-color 0.2s, color 0.2s;
         }
 
-        /* Layout com Capa e Informações Lado a Lado */
         .details-header {
             display: flex;
             gap: 16px;
@@ -91,7 +79,6 @@
         .details-cover img {
             width: 100%;
             height: 100%;
-            aspect-ratio: 0/0;
             object-fit: cover;
             border-radius: 8px;
         }
@@ -333,7 +320,6 @@
             <button id="synopsis-toggle" class="synopsis-toggle-btn" style="display: none;">Read More</button>
         </div>
 
-        <!-- Chapters Header Bar -->
         <div class="chapters-header-bar">
             <h3>Chapters</h3>
             <button id="btn-sort" class="btn-sort-chapters" onclick="inverterOrdemCapitulos()">
@@ -341,13 +327,9 @@
             </button>
         </div>
 
-        <!-- 1. Chapter List -->
-        <div id="chapters-list">
-            Loading chapters...
-        </div>
+        <div id="chapters-list">Loading chapters...</div>
         <button id="btn-ver-mais" class="btn-ver-mais-capitulos" style="display: none;">Load More Chapters</button>
 
-        <!-- 2. Recommendations Section -->
         <div class="recommendations-section">
             <h3>Similar Recommendations</h3>
             <div id="recommendations-grid" class="recommendations-grid">
@@ -377,63 +359,50 @@
       const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzcHdqeGJlb2ZjbGd2cWFldXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxOTAzMjMsImV4cCI6MjEwNTc2NjMyM30.R2qAJ9T25y8HF5EAr8dVJopC0YYJN-X8CbgZ-e1oV4g";
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const manhwaId = urlParams.get('id');
+      const manhwaId = new URLSearchParams(window.location.search).get('id');
 
       let todosCapitulos = [];
       let indicePaginaAtual = 0;
       let ordemAscendente = true;
       const TAMANHO_PAGINA = 20;
 
-      // --- FUNÇÃO PARA INJETAR METADADOS DE SEO DINAMICAMENTE ---
-      async function carregarMetadadosSEO(id) {
+      // Otimização: Unificação das consultas de SEO e Tags em uma única chamada unificada ao Supabase
+      async function inicializarDadosObra(id) {
         if (!id) return;
-        const { data: manga } = await supabase
+        
+        const { data: manga, error } = await supabase
           .from('manhwas')
-          .select('title, synopsis, cover_url')
+          .select('title, synopsis, cover_url, tags')
           .eq('id', id)
           .single();
 
-        if (manga) {
-          const pageTitle = `${manga.title} - Read Online | Mangaice`;
-          const pageDesc = manga.synopsis ? manga.synopsis.slice(0, 160) + '...' : `Read ${manga.title} online with high quality chapters on Mangaice.`;
-          const currentUrl = window.location.href;
+        if (error || !manga) return;
 
-          // Atualizar Title e Description
-          document.title = pageTitle;
-          const metaTitle = document.getElementById('meta-title');
-          if (metaTitle) metaTitle.innerText = pageTitle;
+        // Atualização de SEO Dinâmico
+        const pageTitle = `${manga.title} - Read Online | Mangaice`;
+        const pageDesc = manga.synopsis ? manga.synopsis.slice(0, 160) + '...' : `Read ${manga.title} online on Mangaice.`;
+        const currentUrl = window.location.href;
 
-          const metaDesc = document.getElementById('meta-desc');
-          if (metaDesc) metaDesc.setAttribute('content', pageDesc);
+        document.title = pageTitle;
+        document.getElementById('meta-title').innerText = pageTitle;
+        document.getElementById('meta-desc').setAttribute('content', pageDesc);
+        document.getElementById('canonical-url').setAttribute('href', currentUrl);
+        document.getElementById('og-url').setAttribute('content', currentUrl);
+        document.getElementById('og-title').setAttribute('content', pageTitle);
+        document.getElementById('og-desc').setAttribute('content', pageDesc);
+        document.getElementById('twitter-title').setAttribute('content', pageTitle);
+        document.getElementById('twitter-desc').setAttribute('content', pageDesc);
 
-          const canonicalUrl = document.getElementById('canonical-url');
-          if (canonicalUrl) canonicalUrl.setAttribute('href', currentUrl);
+        if (manga.cover_url) {
+          document.getElementById('og-image').setAttribute('content', manga.cover_url);
+          document.getElementById('twitter-image').setAttribute('content', manga.cover_url);
+        }
 
-          // Atualizar Open Graph Tags
-          const ogUrl = document.getElementById('og-url');
-          if (ogUrl) ogUrl.setAttribute('content', currentUrl);
-
-          const ogTitle = document.getElementById('og-title');
-          if (ogTitle) ogTitle.setAttribute('content', pageTitle);
-
-          const ogDesc = document.getElementById('og-desc');
-          if (ogDesc) ogDesc.setAttribute('content', pageDesc);
-
-          if (manga.cover_url) {
-            const ogImg = document.getElementById('og-image');
-            if (ogImg) ogImg.setAttribute('content', manga.cover_url);
-
-            const twitterImg = document.getElementById('twitter-image');
-            if (twitterImg) twitterImg.setAttribute('content', manga.cover_url);
-          }
-
-          // Atualizar Twitter Cards
-          const twitterTitle = document.getElementById('twitter-title');
-          if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
-
-          const twitterDesc = document.getElementById('twitter-desc');
-          if (twitterDesc) twitterDesc.setAttribute('content', pageDesc);
+        // Carregar Recomendações baseadas nas tags já obtidas (evita uma requisição duplicada)
+        if (manga.tags && manga.tags.length > 0) {
+          carregarRecomendacoes(id, manga.tags);
+        } else {
+          document.getElementById('recommendations-grid').innerHTML = '<p style="color:var(--text-secondary); font-size: 0.85rem;">No recommendations available.</p>';
         }
       }
 
@@ -447,8 +416,8 @@
           return;
         }
 
-        // Carrega o SEO no momento em que abre a obra
-        carregarMetadadosSEO(manhwaId);
+        // Executa carregamento de metadados e capítulos em paralelo para máxima velocidade
+        inicializarDadosObra(manhwaId);
 
         const { data: chapters, error } = await supabase
           .from('chapters')
@@ -461,18 +430,10 @@
         } else {
           todosCapitulos = chapters;
           indicePaginaAtual = 0;
-          listContainer.innerHTML = ''; 
-          
           renderizarProximoBlocoCapitulos();
-
-          if (todosCapitulos.length > TAMANHO_PAGINA) {
-            btnVerMais.style.display = 'block';
-            btnVerMais.onclick = () => renderizarProximoBlocoCapitulos();
-          } else {
-            btnVerMais.style.display = 'none';
-          }
         }
 
+        // Configuração inteligente do botão Read / Continue
         const progressoSalvo = localStorage.getItem(`progresso_manhwa_${manhwaId}`);
         if (btnRead) {
           btnRead.innerHTML = progressoSalvo ? 'Continue' : 'Read';
@@ -489,8 +450,6 @@
             }
           });
         }
-
-        carregarRecomendacoesPorTags(manhwaId);
       }
 
       function renderizarProximoBlocoCapitulos() {
@@ -505,15 +464,17 @@
         const fim = inicio + TAMANHO_PAGINA;
         const bloco = todosCapitulos.slice(inicio, fim);
 
+        // Otimização: Construção por fragmento em lote para evitar gargalos de renderização
+        const fragment = document.createDocumentFragment();
+
         bloco.forEach(ch => {
           const chapterLink = document.createElement('a');
           chapterLink.href = `read.html?chapter_id=${ch.id}`;
           chapterLink.style.cssText = `display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-bottom: 8px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); text-decoration: none;`;
           
-          const title = ch.title ? ch.title : `Chapter ${ch.chapter_number}`;
+          const title = ch.title || `Chapter ${ch.chapter_number}`;
           const totalViews = ch.views || 0;
 
-          // Usando SVG no lugar do emoji de olho em cada capítulo da lista
           chapterLink.innerHTML = `
             <div><strong style="display: block; font-size: 1rem;">${title}</strong></div>
             <div class="chapter-views-count" style="display: flex; align-items: center; gap: 4px;">
@@ -524,16 +485,14 @@
               <span>${totalViews}</span>
             </div>
           `;
-          listContainer.appendChild(chapterLink);
+          fragment.appendChild(chapterLink);
         });
 
+        listContainer.appendChild(fragment);
         indicePaginaAtual++;
 
-        if (indicePaginaAtual * TAMANHO_PAGINA >= todosCapitulos.length) {
-          btnVerMais.style.display = 'none';
-        } else {
-          btnVerMais.style.display = 'block';
-        }
+        btnVerMais.style.display = (indicePaginaAtual * TAMANHO_PAGINA >= todosCapitulos.length) ? 'none' : 'block';
+        btnVerMais.onclick = renderizarProximoBlocoCapitulos;
       }
 
       window.inverterOrdemCapitulos = function() {
@@ -545,34 +504,20 @@
         if (btnSort) {
             btnSort.innerHTML = ordemAscendente ? '⇅ Oldest First' : '⇅ Newest First';
         }
-
-        const listContainer = document.getElementById('chapters-list');
-        if (listContainer) listContainer.innerHTML = '';
         
         renderizarProximoBlocoCapitulos();
-      }
+      };
 
-      async function carregarRecomendacoesPorTags(idAtual) {
+      async function carregarRecomendacoes(idAtual, tags) {
         const recContainer = document.getElementById('recommendations-grid');
         if (!recContainer) return;
 
         try {
-          const { data: atual } = await supabase
-            .from('manhwas')
-            .select('tags')
-            .eq('id', idAtual)
-            .single();
-
-          if (!atual || !atual.tags || atual.tags.length === 0) {
-            recContainer.innerHTML = '<p style="color:var(--text-secondary); font-size: 0.85rem;">No recommendations available.</p>';
-            return;
-          }
-
           const { data: recomendados } = await supabase
             .from('manhwas')
             .select('id, title, cover_url, rating, tags')
             .neq('id', idAtual)
-            .overlaps('tags', atual.tags)
+            .overlaps('tags', tags)
             .limit(10);
 
           if (!recomendados || recomendados.length === 0) {
@@ -581,6 +526,7 @@
           }
 
           recContainer.innerHTML = '';
+          const fragment = document.createDocumentFragment();
 
           for (const item of recomendados) {
             const { count } = await supabase
@@ -607,8 +553,9 @@
                 <span class="rec-card-chapters">${textoCapitulos}</span>
               </div>
             `;
-            recContainer.appendChild(card);
+            fragment.appendChild(card);
           }
+          recContainer.appendChild(fragment);
 
         } catch (e) {
           recContainer.innerHTML = '<p style="color:var(--text-secondary); font-size: 0.85rem;">Error loading recommendations.</p>';
