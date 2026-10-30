@@ -41,11 +41,12 @@
             --text-secondary: #555560;
         }
 
+        /* Container ajustado idêntico à Home para alinhar perfeitamente os cards */
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 1.5rem;
             box-sizing: border-box;
         }
 
@@ -115,13 +116,15 @@
 
         .filter-toggle-btn:hover { opacity: 0.8; }
 
+        /* CORREÇÃO DO DROPDOWN: Alinhado à direita no mobile para não quebrar a tela */
         .tags-dropdown {
             display: none;
             position: absolute;
             top: 48px;
-            left: 0;
-            width: calc(100vw - 2rem);
-            max-width: 320px;
+            right: 0;
+            left: auto;
+            width: 280px;
+            max-width: 90vw;
             background-color: var(--card-bg, #1e1e24);
             border: 1px solid var(--border-color, #2a2a35);
             border-radius: 12px;
@@ -131,6 +134,14 @@
             overflow-y: auto;
             max-height: 350px;
             box-sizing: border-box;
+        }
+
+        @media (min-width: 600px) {
+            .tags-dropdown {
+                left: 0;
+                right: auto;
+                width: 320px;
+            }
         }
 
         .tags-dropdown.active { display: block; }
@@ -182,24 +193,24 @@
             font-weight: 500;
         }
 
-        .main-content { padding: 1.5rem 0; }
+        .main-content { padding: 2rem 0 3rem 0; }
 
-        .section-header h2 { font-size: 1.25rem; margin: 0 0 0.25rem 0; color: var(--text-main, #fff); }
+        .section-header h2 { font-size: 1.5rem; margin: 0 0 0.25rem 0; color: var(--text-main, #fff); }
         .section-subtitle { font-size: 0.85rem; color: var(--text-secondary, #a0a0ab); margin: 0; }
 
+        /* GRID CORRIGIDO IDÊNTICO À HOME */
         .manga-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-            margin-top: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
 
-        @media (min-width: 480px) {
-            .manga-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
-        }
-
-        @media (min-width: 768px) {
-            .manga-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+        @media (max-width: 600px) {
+            .manga-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
         }
 
         .manga-card {
@@ -213,9 +224,9 @@
             color: inherit;
             transition: transform 0.2s, border-color 0.2s;
         }
-        .manga-card:hover { border-color: #2825b6; }
+        .manga-card:hover { border-color: #2825b6; transform: translateY(-4px); }
 
-        .card-cover { position: relative; width: 100%; aspect-ratio: 3/4; background-color: #2a2a35; }
+        .card-cover { position: relative; width: 100%; aspect-ratio: 2/3; background-color: #2a2a35; }
         .card-cover img { width: 100%; height: 100%; object-fit: cover; }
 
         .card-rating {
@@ -230,9 +241,9 @@
             font-weight: 600;
         }
 
-        .card-details { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.5rem; flex: 1; }
+        .card-details { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.9rem; flex: 1; }
         .card-title {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 600;
             margin: 0;
             color: var(--text-main, #fff);
@@ -242,16 +253,17 @@
             overflow: hidden;
         }
 
-        .card-chapters { font-size: 0.75rem; color: #2825b6; font-weight: 600; margin-top: auto; }
+        .card-chapters { font-size: 0.8rem; color: #2825b6; font-weight: 600; margin-top: auto; }
         .home-btn { color: var(--text-main, #fff); display: flex; align-items: center; justify-content: center; }
 
         footer {
-            text-align: left;
-            padding: 1.5rem 1rem;
-            margin-top: 2rem;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: auto;
             border-top: 1px solid var(--border-color, #2a2a35);
             color: var(--text-muted, #80808a);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            background-color: var(--card-bg, #1e1e24);
         }
         footer a { color: var(--text-secondary, #a0a0ab); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
@@ -448,7 +460,7 @@
 
                 gridResultados.innerHTML = "";
 
-                if (Array.isArray(resultados) && resultados.length > 0) {
+                if (Array.isArray(resultados) && resultados.options !== 0 && resultados.length > 0) {
                     const fragmentCards = document.createDocumentFragment();
 
                     resultados.forEach(manga => {
