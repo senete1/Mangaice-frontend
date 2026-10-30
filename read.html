@@ -41,7 +41,7 @@
             --header-bg: #1e1e1e;
             --card-bg: #161616;
             --border-color: #2a2a2a;
-            --input-bg: #222;
+            --input-bg: #1c1c22;
         }
 
         html.tema-claro {
@@ -109,6 +109,7 @@
             margin: 60px auto 0 auto;
             display: flex;
             flex-direction: column;
+            padding: 0 15px;
         }
 
         #leitor-container { 
@@ -152,13 +153,13 @@
             border-top: 1px solid var(--border-color);
         }
 
+        /* ==========================================================
+           COMMENTS SECTION STYLES (Estilo YouTube / Profissional)
+           ========================================================== */
         .comments-section {
             width: 100%;
             margin: 0 auto 40px auto;
-            padding: 20px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 10px 0;
         }
 
         .comments-section h3 {
@@ -171,7 +172,7 @@
         .comment-form {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 30px;
         }
 
@@ -183,10 +184,21 @@
             padding: 10px 12px;
             background-color: var(--input-bg);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 8px;
             color: var(--text-main);
             font-family: inherit;
             font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .comment-form textarea,
+        .reply-form textarea {
+            resize: none;
+            min-height: 42px;
+            max-height: 120px;
+            line-height: 1.4;
+            overflow-y: auto;
         }
 
         .comment-form input:focus, 
@@ -194,7 +206,6 @@
         .reply-form input:focus,
         .reply-form textarea:focus {
             border-color: #2825b6;
-            outline: none;
         }
 
         .btn-comment, .btn-send-reply {
@@ -217,20 +228,20 @@
         .comments-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
         }
 
         .comment-item {
-            background-color: var(--card-bg);
-            padding: 12px 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .comment-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 6px;
             font-size: 0.82rem;
         }
 
@@ -248,47 +259,47 @@
             font-size: 0.92rem;
             line-height: 1.4;
             word-break: break-word;
+            margin-top: 2px;
         }
 
         .comment-actions {
             display: flex;
             gap: 15px;
-            margin-top: 8px;
+            margin-top: 4px;
         }
 
         .btn-reply-toggle, .btn-toggle-replies {
             background: none;
             border: none;
-            color: #2825b6;
+            color: var(--text-secondary);
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             padding: 0;
+            transition: color 0.2s;
         }
 
         .btn-reply-toggle:hover, .btn-toggle-replies:hover {
+            color: #2825b6;
             text-decoration: underline;
         }
 
         .comment-replies-wrapper {
-            margin-top: 10px;
-            margin-left: 0;
-            padding-left: 12px;
-            border-left: 2px solid var(--border-color);
+            margin-top: 8px;
+            margin-left: 12px;
+            padding-left: 14px;
+            border-left: 2px solid #2825b6;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
         .reply-form {
             display: none;
-            margin-top: 10px;
+            margin-top: 8px;
             flex-direction: column;
             gap: 8px;
-            background-color: var(--card-bg);
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
+            padding: 8px 0;
         }
 
         .mensagem-comentario {
@@ -380,7 +391,7 @@
             
             <form id="comment-form" class="comment-form">
                 <input type="text" id="comment-name" placeholder="Name" required autocomplete="off">
-                <textarea id="comment-text" placeholder="Write it here..." rows="3" required></textarea>
+                <textarea id="comment-text" placeholder="Write a comment..." rows="1" required></textarea>
                 <button type="submit" class="btn-comment">Post comment</button>
             </form>
 
@@ -421,9 +432,15 @@
                 localStorage.setItem('mangaice_user_name', nomeInput.value.trim());
             });
         }
+
+        document.addEventListener('input', (e) => {
+            if (e.target.tagName.toLowerCase() === 'textarea') {
+                e.target.style.height = 'auto';
+                e.target.style.height = (e.target.scrollHeight) + 'px';
+            }
+        });
     });
 
-    // --- OTIMIZAÇÃO: ATUALIZAÇÃO DINÂMICA DE SEO ---
     async function atualizarSEOCapitulo(manhwaId, chapterNumber, customTitle) {
         if (!manhwaId) return;
 
@@ -499,7 +516,7 @@
             const principais = comentarios.filter(c => !c.parent_id);
 
             principais.forEach(com => {
-                fragment.appendChild(criarElementoComentario(com, comentarios, chapterId));
+                fragment.appendChild(criarElementoComentario(com, comentarios, chapterId, 1));
             });
 
             listaComentariosEl.appendChild(fragment);
@@ -510,7 +527,7 @@
         }
     }
 
-    function criarElementoComentario(com, todosComentarios, chapterId) {
+    function criarElementoComentario(com, todosComentarios, chapterId, nivel) {
         const dataFormatada = new Date(com.created_at).toLocaleDateString('en-US', {
             day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
@@ -521,6 +538,8 @@
         const item = document.createElement('div');
         item.className = 'comment-item';
         
+        const permitirReply = nivel < 2;
+
         item.innerHTML = `
             <div class="comment-header">
                 <span class="comment-author">${escapeHtml(com.user_name)}</span>
@@ -529,15 +548,16 @@
             <div class="comment-body">${escapeHtml(com.content)}</div>
             
             <div class="comment-actions">
-                <button class="btn-reply-toggle" onclick="toggleReplyBox(${com.id})">Reply</button>
+                ${permitirReply ? `<button class="btn-reply-toggle" onclick="toggleReplyBox(${com.id})">Reply</button>` : ''}
                 ${temRespostas ? `<button class="btn-toggle-replies" id="btn-toggle-${com.id}" onclick="toggleRepliesVisibility(${com.id})">view ${respostas.length} ${respostas.length === 1 ? 'reply' : 'replies'}</button>` : ''}
             </div>
 
+            ${permitirReply ? `
             <div id="reply-form-${com.id}" class="reply-form">
                 <input type="text" id="reply-name-${com.id}" placeholder="Your name" value="${localStorage.getItem('mangaice_user_name') || ''}" required autocomplete="off">
-                <textarea id="reply-text-${com.id}" placeholder="Write your reply here..." rows="2" required></textarea>
+                <textarea id="reply-text-${com.id}" placeholder="Write your reply here..." rows="1" required></textarea>
                 <button type="button" class="btn-send-reply" onclick="enviarResposta(${com.id}, ${chapterId})">Post reply</button>
-            </div>
+            </div>` : ''}
 
             <div class="comment-replies-wrapper" id="replies-container-${com.id}" style="display: none;"></div>
         `;
@@ -546,7 +566,7 @@
             const containerRespostas = item.querySelector(`#replies-container-${com.id}`);
             const fragmentRespostas = document.createDocumentFragment();
             respostas.forEach(resp => {
-                fragmentRespostas.appendChild(criarElementoComentario(resp, todosComentarios, chapterId));
+                fragmentRespostas.appendChild(criarElementoComentario(resp, todosComentarios, chapterId, nivel + 1));
             });
             containerRespostas.appendChild(fragmentRespostas);
         }
@@ -654,6 +674,7 @@
 
             if (response.ok) {
                 textoInput.value = ''; 
+                textoInput.style.height = 'auto';
                 await carregarComentarios(chapterId); 
             } else {
                 const resultado = await response.json();
@@ -724,7 +745,6 @@
                 const btnVoltar = document.getElementById('btn-voltar-detalhes');
                 if (btnVoltar) btnVoltar.href = `details.html?id=${capitulo.manhwa_id}`;
 
-                // Busca paralela otimizada de capítulos vizinhos
                 fetch(`${MAIN_SUPABASE_URL}/rest/v1/chapters?manhwa_id=eq.${capitulo.manhwa_id}&select=id,chapter_number&order=chapter_number.asc&apikey=${MAIN_SUPABASE_ANON_KEY}`, {
                     headers: { "apikey": MAIN_SUPABASE_ANON_KEY, "Authorization": `Bearer ${MAIN_SUPABASE_ANON_KEY}` }
                 })
@@ -792,17 +812,25 @@
                 return;
             }
 
-            // Otimização: Renderização em lote com Fragment para evitar travamentos nas imagens
             const fragmentImagens = document.createDocumentFragment();
             let imagensRenderizadas = 0;
 
-            ficheiros.forEach((ficheiro) => {
+            // OTIMIZAÇÃO ULTRA-RÁPIDA DAS FOTOS
+            ficheiros.forEach((ficheiro, index) => {
                 if (ficheiro.name === ".emptyFolderPlaceholder" || !ficheiro.name || ficheiro.name.startsWith('.')) return;
 
                 const imgElement = document.createElement('img');
                 imgElement.src = `${storageUrl}/storage/v1/object/public/${bucketName}/${nomeDaPasta}/${ficheiro.name}`;
                 imgElement.className = 'pagina-manga';
                 imgElement.alt = `Page: ${ficheiro.name}`;
+                
+                // Prioridade máxima nas 3 primeiras fotos, lazy loading nas demais para máxima velocidade
+                if (index < 3) {
+                    imgElement.setAttribute('fetchpriority', 'high');
+                } else {
+                    imgElement.loading = 'lazy';
+                    imgElement.decoding = 'async';
+                }
                 
                 fragmentImagens.appendChild(imgElement);
                 imagensRenderizadas++;
